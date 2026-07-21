@@ -148,6 +148,12 @@ button {
   text-align: center;
 }
 
+@media (max-width: 720px) {
+  .nav__cta + .qxCTlb {
+    display: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .qxCTlb:hover::after {
     transform: none;

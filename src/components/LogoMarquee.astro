@@ -3,12 +3,26 @@ import fs from "node:fs";
 import path from "node:path";
 
 const KNOWN_CLIENTS = [
+  "Maseno University",
+  "Africa CHA Platform",
   "AIBBC",
+  "The FPL Syndicate",
   "SPRBS",
-  "WPMHCBO",
+  "Pediatric and Maternal Health Solutions",
   "ThinkZ Tutoring",
+  "Mama Na Mtoto Foundation",
+  "morphosis",
+  "LACOWE",
   "St. Elizabeth Care",
   "Leopard View Hotel",
+  "The Healthy Mind Club e.V",
+  "ICPH",
+  "ASSOMESCA",
+  "CHAL",
+  "CHASL",
+  "UPMB",
+  "Z.A.C.H",
+  "iDEAL",
 ];
 
 const logosDir = path.resolve("public/logos");
@@ -42,14 +56,14 @@ const track = [...logos, ...logos];
     <div class="marquee__track">
       {track.map((logo) => (
         <div class="marquee__item">
-          <img src={logo.src} alt={logo.name} loading="lazy" width="140" height="48" />
+          <img src={logo.src} alt={logo.name} loading="lazy" />
         </div>
       ))}
     </div>
     <div class="marquee__grid" aria-hidden="true">
       {logos.map((logo) => (
         <div class="marquee__item">
-          <img src={logo.src} alt="" loading="lazy" width="140" height="48" />
+          <img src={logo.src} alt="" loading="lazy" />
         </div>
       ))}
     </div>
@@ -98,8 +112,9 @@ const track = [...logos, ...logos];
   }
 
   .marquee__item img {
-    height: 32px;
+    height: 56px;
     width: auto;
+    max-width: 160px;
     filter: grayscale(1) opacity(0.45);
     transition: filter var(--duration-base) var(--ease-standard);
   }
