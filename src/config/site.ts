@@ -4,6 +4,8 @@
 export const GOOGLE_CALENDAR_BOOKING_URL =
   "https://calendar.google.com/calendar/appointments/schedules/AcZssZ3GZDwyOCskY5XkgocM-oukWutcTSPkY9-ZolrzZd3TCLOSsfBan1qj8M7oxpUAVngUZH2hJPZs";
 
+export const GA4_MEASUREMENT_ID = "G-3J2WBB10P6";
+
 export const CONTACT_EMAIL = "craig@sowerved.tech";
 
 export const PHONE = "+254 710 410 793";
