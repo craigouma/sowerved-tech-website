@@ -54,6 +54,19 @@ const pageTitle = path === "/" ? title : `${title} | ${SITE_NAME}`;
 
     <meta name="theme-color" content="#FFFFFF" />
 
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme");
+          if (stored === "dark") {
+            document.documentElement.setAttribute("data-theme", "dark");
+            var meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) meta.setAttribute("content", "#0B0813");
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet" />
     <script src="https://calendar.google.com/calendar/scheduling-button-script.js" async></script>
   </head>

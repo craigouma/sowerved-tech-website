@@ -19,9 +19,14 @@
 
   /* Utility */
   --focus-ring: #2B0558;
+
+  /* Derived surfaces (translucent, theme dependent) */
+  --nav-bg: rgba(255, 255, 255, 0.7);
+  --nav-bg-scrolled: rgba(255, 255, 255, 0.92);
+  --hero-glow: rgba(43, 5, 88, 0.05);
 }
 
-/* ---- Dark theme (for the future switcher, not wired up yet) ---- */
+/* ---- Dark theme ---- */
 [data-theme="dark"] {
   --bg: #0B0813;
   --surface: #131020;
@@ -38,6 +43,10 @@
   --accent-soft: rgba(168, 130, 240, 0.12);
 
   --focus-ring: #A882F0;
+
+  --nav-bg: rgba(11, 8, 19, 0.7);
+  --nav-bg-scrolled: rgba(11, 8, 19, 0.92);
+  --hero-glow: rgba(168, 130, 240, 0.14);
 }
 
 :root {
