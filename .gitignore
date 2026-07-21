@@ -24,3 +24,7 @@ pnpm-debug.log*
 .idea/
 
 sowerved-redesign-brief.md
+
+# AI assistant instruction files
+AGENTS.md
+CLAUDE.md
