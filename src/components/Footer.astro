@@ -22,7 +22,8 @@ const year = new Date().getFullYear();
 <footer class="footer">
   <div class="container footer__inner">
     <div class="footer__brand">
-      <img src="/brand/logo-dark.png" alt="Sowerved Tech" width="110" height="35" />
+      <img class="footer__logo-img footer__logo-img--light" src="/brand/logo-dark.png" alt="Sowerved Tech" width="110" height="35" />
+      <img class="footer__logo-img footer__logo-img--dark" src="/brand/logo-light.png" alt="Sowerved Tech" width="110" height="35" />
       <p class="footer__desc">{FOOTER_DESCRIPTION}</p>
     </div>
 
@@ -71,10 +72,22 @@ const year = new Date().getFullYear();
     padding-bottom: var(--space-16);
   }
 
-  .footer__brand img {
+  .footer__logo-img {
     height: 24px;
     width: auto;
     margin-bottom: var(--space-4);
+  }
+
+  .footer__logo-img--dark {
+    display: none;
+  }
+
+  :global([data-theme="dark"]) .footer__logo-img--light {
+    display: none;
+  }
+
+  :global([data-theme="dark"]) .footer__logo-img--dark {
+    display: block;
   }
 
   .footer__desc {

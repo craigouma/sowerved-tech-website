@@ -2,13 +2,13 @@
 import SchedulingButton from "./SchedulingButton.astro";
 import { NAV_LINKS } from "../config/site";
 
-const logoDark = "/brand/logo-dark.png";
 ---
 
 <header class="nav" id="site-nav">
   <div class="container nav__inner">
     <a href="/" class="nav__logo" aria-label="Sowerved Tech, home">
-      <img src={logoDark} alt="Sowerved Tech" width="130" height="41" />
+      <img class="nav__logo-img nav__logo-img--light" src="/brand/logo-dark.png" alt="Sowerved Tech" width="130" height="41" />
+      <img class="nav__logo-img nav__logo-img--dark" src="/brand/logo-light.png" alt="Sowerved Tech" width="130" height="41" />
     </a>
 
     <nav class="nav__links" aria-label="Primary">
@@ -20,6 +20,23 @@ const logoDark = "/brand/logo-dark.png";
     </nav>
 
     <div class="nav__actions">
+      <button class="theme-toggle" aria-label="Switch to dark mode" type="button">
+        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2" />
+          <path d="M12 20v2" />
+          <path d="m4.93 4.93 1.41 1.41" />
+          <path d="m17.66 17.66 1.41 1.41" />
+          <path d="M2 12h2" />
+          <path d="M20 12h2" />
+          <path d="m6.34 17.66-1.41 1.41" />
+          <path d="m19.07 4.93-1.41 1.41" />
+        </svg>
+        <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
+        </svg>
+      </button>
+
       <SchedulingButton class="nav__cta" />
 
       <button
@@ -47,11 +64,30 @@ const logoDark = "/brand/logo-dark.png";
   aria-label="Menu"
   hidden
 >
-  <button class="nav-drawer__close" id="drawer-close" aria-label="Close menu">
-    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
-      <path d="M18 6 6 18M6 6l12 12" />
-    </svg>
-  </button>
+  <div class="nav-drawer__header">
+    <button class="theme-toggle" aria-label="Switch to dark mode" type="button">
+      <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2" />
+        <path d="M12 20v2" />
+        <path d="m4.93 4.93 1.41 1.41" />
+        <path d="m17.66 17.66 1.41 1.41" />
+        <path d="M2 12h2" />
+        <path d="M20 12h2" />
+        <path d="m6.34 17.66-1.41 1.41" />
+        <path d="m19.07 4.93-1.41 1.41" />
+      </svg>
+      <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
+      </svg>
+    </button>
+
+    <button class="nav-drawer__close" id="drawer-close" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+        <path d="M18 6 6 18M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
 
   <nav class="nav-drawer__links" aria-label="Mobile">
     <ul>
@@ -154,6 +190,51 @@ const logoDark = "/brand/logo-dark.png";
   };
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
+
+  const themeToggles = document.querySelectorAll<HTMLButtonElement>(".theme-toggle");
+
+  function currentTheme(): "light" | "dark" {
+    return document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+  }
+
+  function syncThemeToggles(theme: "light" | "dark") {
+    themeToggles.forEach((btn) => {
+      btn.setAttribute("aria-label", theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
+      btn.setAttribute("aria-pressed", String(theme === "dark"));
+    });
+
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    themeColorMeta?.setAttribute("content", theme === "dark" ? "#0B0813" : "#FFFFFF");
+  }
+
+  syncThemeToggles(currentTheme());
+
+  themeToggles.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const next = currentTheme() === "dark" ? "light" : "dark";
+
+      if (!prefersReducedMotion()) {
+        document.documentElement.classList.add("theme-transition");
+        window.setTimeout(() => {
+          document.documentElement.classList.remove("theme-transition");
+        }, 300);
+      }
+
+      if (next === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+      } else {
+        document.documentElement.removeAttribute("data-theme");
+      }
+
+      try {
+        localStorage.setItem("theme", next);
+      } catch {
+        // localStorage unavailable, theme just won't persist across reloads
+      }
+
+      syncThemeToggles(next);
+    });
+  });
 </script>
 
 <style>
@@ -161,14 +242,14 @@ const logoDark = "/brand/logo-dark.png";
     position: sticky;
     top: 0;
     z-index: 50;
-    background: rgba(255, 255, 255, 0.7);
+    background: var(--nav-bg);
     border-bottom: 1px solid transparent;
     transition: background-color var(--duration-base) var(--ease-standard),
       border-color var(--duration-base) var(--ease-standard);
   }
 
   .nav--scrolled {
-    background: rgba(255, 255, 255, 0.92);
+    background: var(--nav-bg-scrolled);
     border-bottom-color: var(--border);
   }
 
@@ -186,9 +267,21 @@ const logoDark = "/brand/logo-dark.png";
     flex-shrink: 0;
   }
 
-  .nav__logo img {
+  .nav__logo-img {
     height: 60px;
     width: auto;
+  }
+
+  .nav__logo-img--dark {
+    display: none;
+  }
+
+  :global([data-theme="dark"]) .nav__logo-img--light {
+    display: none;
+  }
+
+  :global([data-theme="dark"]) .nav__logo-img--dark {
+    display: block;
   }
 
   .nav__links ul {
@@ -211,6 +304,46 @@ const logoDark = "/brand/logo-dark.png";
     display: flex;
     align-items: center;
     gap: var(--space-4);
+  }
+
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    transition: color var(--duration-fast) var(--ease-standard),
+      border-color var(--duration-fast) var(--ease-standard);
+  }
+
+  .theme-toggle:hover {
+    color: var(--text);
+    border-color: var(--accent);
+  }
+
+  .theme-toggle__icon--moon {
+    display: block;
+  }
+
+  .theme-toggle__icon--sun {
+    display: none;
+  }
+
+  :global([data-theme="dark"]) .theme-toggle__icon--moon {
+    display: none;
+  }
+
+  :global([data-theme="dark"]) .theme-toggle__icon--sun {
+    display: block;
+  }
+
+  .nav-drawer__header .theme-toggle {
+    width: 36px;
+    height: 36px;
   }
 
   .nav__toggle {
@@ -258,8 +391,14 @@ const logoDark = "/brand/logo-dark.png";
     transform: translateX(0);
   }
 
+  .nav-drawer__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-10);
+  }
+
   .nav-drawer__close {
-    align-self: flex-end;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -268,7 +407,6 @@ const logoDark = "/brand/logo-dark.png";
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     color: var(--text);
-    margin-bottom: var(--space-10);
   }
 
   .nav-drawer__links ul {
@@ -300,6 +438,10 @@ const logoDark = "/brand/logo-dark.png";
     }
 
     :global(.nav__cta) {
+      display: none;
+    }
+
+    .nav__actions .theme-toggle {
       display: none;
     }
 
