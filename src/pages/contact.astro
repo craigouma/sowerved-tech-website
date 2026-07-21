@@ -99,8 +99,12 @@ const socialLinks = [
 
   .contact__embed {
     margin-top: var(--space-8);
-    background: var(--surface);
-    border: 1px solid var(--border);
+    /* Fixed light background, not theme tokens: Google's scheduling iframe has a
+       transparent background and near-black text, assuming a light page behind it.
+       In dark mode, --surface would put that same near-black text on a near-black
+       background. */
+    background: #FFFFFF;
+    border: 1px solid #E4E1EC;
     border-radius: var(--radius-lg);
     padding: var(--space-2);
     overflow: hidden;
