@@ -1,0 +1,273 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Section from "../components/Section.astro";
+import Eyebrow from "../components/Eyebrow.astro";
+import Button from "../components/Button.astro";
+import SchedulingButton from "../components/SchedulingButton.astro";
+import ServiceCard from "../components/ServiceCard.astro";
+import LogoMarquee from "../components/LogoMarquee.astro";
+
+const services = [
+  {
+    icon: "code-2" as const,
+    title: "Custom software",
+    description:
+      "Applications that automate real work, handle real load, and scale as you grow. Designed to be fast, reliable, and maintainable long after handover.",
+  },
+  {
+    icon: "layout-template" as const,
+    title: "Modern websites",
+    description:
+      "Responsive, quick, and considered. From focused landing pages to full platforms that represent your brand and convert.",
+  },
+  {
+    icon: "brain-circuit" as const,
+    title: "Machine learning",
+    description:
+      "Models and data systems that turn your data into decisions. Prediction, classification, and intelligent automation, built to fit your workflow.",
+  },
+  {
+    icon: "chart-no-axes-combined" as const,
+    title: "Data analytics",
+    description:
+      "Pipelines, dashboards, and reporting that make your data usable. Built with SQL, Python, and modern warehouses, with data quality checked at every step.",
+  },
+  {
+    icon: "building-2" as const,
+    title: "Microsoft Dynamics 365",
+    description:
+      "Setup, integration, and support for Dynamics 365 and Business Central, connected cleanly to the rest of your systems and reporting.",
+  },
+  {
+    icon: "server" as const,
+    title: "Infrastructure and security",
+    description:
+      "Linux servers, hardening, and monitoring that keep systems online. Incident response and routine maintenance, handled quietly in the background.",
+  },
+  {
+    icon: "puzzle" as const,
+    title: "Zoho integration",
+    description:
+      "Setup and integration for Zoho CRM and the wider Zoho suite, connected cleanly to the rest of your systems and reporting.",
+  },
+  {
+    icon: "clipboard-check" as const,
+    title: "Monitoring and evaluation",
+    description:
+      "MEL frameworks, logframes, and field data collection with KoboToolbox and ODK. Built for programmes that report to donors and need evidence behind every decision.",
+  },
+  {
+    icon: "bot" as const,
+    title: "AI automation",
+    description:
+      "Automated pipelines and AI-assisted tooling that take repetitive work off your plate. Built to run on their own, with a human looped in only when needed.",
+  },
+  {
+    icon: "wrench" as const,
+    title: "Website support",
+    description:
+      "Ongoing support for WordPress and Drupal sites already in production. Incident response, security patches, and the routine maintenance that keeps them running.",
+  },
+  {
+    icon: "shield-check" as const,
+    title: "Data governance and compliance",
+    description:
+      "Access controls, audit logging, and data lineage documentation that hold up under scrutiny. Built with GDPR and compliance requirements in mind from the start.",
+  },
+  {
+    icon: "graduation-cap" as const,
+    title: "Training and capacity building",
+    description:
+      "Hands-on training that leaves your team able to run their own systems and reporting. Documentation and SOPs included, not an afterthought.",
+  },
+];
+
+const howWeWork = [
+  {
+    title: "Senior by default.",
+    description:
+      "You work directly with the people writing the code, not a layer of account managers.",
+  },
+  {
+    title: "Built to last.",
+    description:
+      "Clean architecture, tested, documented, and handed over so nothing stays locked to us.",
+  },
+  {
+    title: "Fast and focused.",
+    description:
+      "A small team, short feedback loops, and delivery you can actually track.",
+  },
+  {
+    title: "Proven across domains.",
+    description: "Healthcare, fintech, and research, delivered across three continents.",
+  },
+];
+---
+
+<Layout
+  title="Sowerved Tech: where software meets intelligence"
+  description="We build software, websites, data systems, and machine learning for businesses and healthcare organizations. Practical engineering from a small senior team in Nairobi."
+  path="/"
+>
+  <section class="hero">
+    <div class="container hero__inner">
+      <div class="hero__glow" aria-hidden="true"></div>
+      <Eyebrow>Software &middot; Web &middot; Data &middot; Machine learning</Eyebrow>
+      <h1 class="hero__heading">Where software meets intelligence.</h1>
+      <p class="hero__subhead">
+        We build software, websites, data systems, and machine learning for businesses
+        and healthcare organizations. Practical engineering from a small senior team in
+        Nairobi, delivered across Africa, Europe, and North America.
+      </p>
+      <div class="hero__actions">
+        <SchedulingButton />
+        <Button href="#services" variant="ghost" arrow>
+          What we do
+        </Button>
+      </div>
+    </div>
+  </section>
+
+  <Section id="services" eyebrow="What we do" heading="Twelve things, done well.">
+    <div class="services-grid">
+      {services.map((service) => (
+        <ServiceCard
+          icon={service.icon}
+          title={service.title}
+          description={service.description}
+        />
+      ))}
+    </div>
+  </Section>
+
+  <Section eyebrow="How we work" heading="A small team, close to the code.">
+    <div class="how-grid">
+      {howWeWork.map((item) => (
+        <div class="how-item" data-reveal>
+          <h3 class="how-item__title">{item.title}</h3>
+          <p class="how-item__desc">{item.description}</p>
+        </div>
+      ))}
+    </div>
+  </Section>
+
+  <Section eyebrow="Trusted by" heading="Teams we have built with.">
+    <LogoMarquee />
+  </Section>
+
+  <section class="cta-band">
+    <div class="container cta-band__inner">
+      <div>
+        <h2>Have something in mind?</h2>
+        <p class="cta-band__line">Book a short call and tell us what you are building.</p>
+      </div>
+      <SchedulingButton />
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: calc(82vh - var(--nav-height));
+    display: flex;
+    align-items: center;
+    overflow: clip;
+  }
+
+  .hero__inner {
+    position: relative;
+    max-width: 46em;
+    padding-block: var(--space-16);
+  }
+
+  .hero__glow {
+    position: absolute;
+    top: -160px;
+    left: -120px;
+    width: 640px;
+    height: 640px;
+    background: radial-gradient(circle, rgba(43, 5, 88, 0.05), transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .hero__heading {
+    margin-top: var(--space-5);
+    max-width: 14ch;
+  }
+
+  .hero__subhead {
+    margin-top: var(--space-6);
+    font-size: var(--fs-body);
+    color: var(--text-muted);
+    max-width: 40em;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-top: var(--space-10);
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+  }
+
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-10) var(--space-12);
+  }
+
+  .how-item__title {
+    font-weight: 500;
+    font-size: var(--fs-body);
+  }
+
+  .how-item__desc {
+    margin-top: var(--space-2);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+  }
+
+  .cta-band {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding-block: var(--space-20);
+  }
+
+  .cta-band__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-8);
+    flex-wrap: wrap;
+  }
+
+  .cta-band__line {
+    margin-top: var(--space-3);
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 900px) {
+    .services-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .how-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .cta-band__inner {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

@@ -1,0 +1,46 @@
+---
+import Eyebrow from "./Eyebrow.astro";
+
+interface Props {
+  id?: string;
+  eyebrow?: string;
+  heading?: string;
+  class?: string;
+  surface?: boolean;
+}
+
+const { id, eyebrow, heading, class: className, surface = false } = Astro.props;
+---
+
+<section id={id} class:list={["section", { "section--surface": surface }, className]}>
+  <div class="container">
+    {(eyebrow || heading) && (
+      <header class="section__header" data-reveal>
+        {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
+        {heading && <h2 class="section__heading">{heading}</h2>}
+      </header>
+    )}
+    <slot />
+  </div>
+</section>
+
+<style>
+  .section {
+    padding-block: var(--section-pad);
+  }
+
+  .section--surface {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section__header {
+    margin-bottom: var(--space-16);
+    max-width: 40em;
+  }
+
+  .section__heading {
+    margin-top: var(--space-3);
+  }
+</style>

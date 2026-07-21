@@ -1,0 +1,79 @@
+---
+import code2 from "lucide-static/icons/code-2.svg?raw";
+import layoutTemplate from "lucide-static/icons/layout-template.svg?raw";
+import brainCircuit from "lucide-static/icons/brain-circuit.svg?raw";
+import chartCombined from "lucide-static/icons/chart-no-axes-combined.svg?raw";
+import building2 from "lucide-static/icons/building-2.svg?raw";
+import server from "lucide-static/icons/server.svg?raw";
+import puzzle from "lucide-static/icons/puzzle.svg?raw";
+import clipboardCheck from "lucide-static/icons/clipboard-check.svg?raw";
+import bot from "lucide-static/icons/bot.svg?raw";
+import wrench from "lucide-static/icons/wrench.svg?raw";
+import shieldCheck from "lucide-static/icons/shield-check.svg?raw";
+import graduationCap from "lucide-static/icons/graduation-cap.svg?raw";
+
+const icons = {
+  "code-2": code2,
+  "layout-template": layoutTemplate,
+  "brain-circuit": brainCircuit,
+  "chart-no-axes-combined": chartCombined,
+  "building-2": building2,
+  server: server,
+  puzzle: puzzle,
+  "clipboard-check": clipboardCheck,
+  bot: bot,
+  wrench: wrench,
+  "shield-check": shieldCheck,
+  "graduation-cap": graduationCap,
+} as const;
+
+interface Props {
+  icon: keyof typeof icons;
+  title: string;
+  description: string;
+}
+
+const { icon, title, description } = Astro.props;
+const svg = icons[icon];
+---
+
+<article class="service-card" data-reveal>
+  <span class="service-card__icon" set:html={svg} />
+  <h3 class="service-card__title">{title}</h3>
+  <p class="service-card__desc">{description}</p>
+</article>
+
+<style>
+  .service-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding: var(--space-8);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+  }
+
+  .service-card__icon {
+    display: inline-flex;
+    color: var(--accent);
+    width: 24px;
+    height: 24px;
+  }
+
+  .service-card__icon :global(svg) {
+    width: 100%;
+    height: 100%;
+    stroke-width: 1.5;
+  }
+
+  .service-card__title {
+    font-weight: 500;
+  }
+
+  .service-card__desc {
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+  }
+</style>

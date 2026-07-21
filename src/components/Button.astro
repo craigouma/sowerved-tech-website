@@ -1,0 +1,89 @@
+---
+interface Props {
+  href?: string;
+  variant?: "primary" | "ghost";
+  arrow?: boolean;
+  external?: boolean;
+  class?: string;
+}
+
+const {
+  href,
+  variant = "primary",
+  arrow = false,
+  external = false,
+  class: className,
+} = Astro.props;
+
+const Tag = href ? "a" : "button";
+const externalProps = external
+  ? { target: "_blank", rel: "noopener noreferrer" }
+  : {};
+---
+
+<Tag
+  class:list={["btn", `btn--${variant}`, className]}
+  href={href}
+  {...externalProps}
+>
+  <span><slot /></span>
+  {arrow && <span class="btn__arrow" aria-hidden="true">&rarr;</span>}
+</Tag>
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-sans);
+    font-size: var(--fs-small);
+    font-weight: 500;
+    line-height: 1;
+    padding: var(--space-4) var(--space-6);
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    transition: background-color var(--duration-base) var(--ease-standard),
+      border-color var(--duration-base) var(--ease-standard),
+      color var(--duration-base) var(--ease-standard),
+      transform var(--duration-fast) var(--ease-standard);
+    white-space: nowrap;
+  }
+
+  .btn:active {
+    transform: translateY(1px);
+  }
+
+  .btn--primary {
+    background: var(--brand);
+    color: #FFFFFF;
+  }
+
+  .btn--primary:hover {
+    background: var(--accent-hover);
+  }
+
+  .btn--ghost {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text);
+  }
+
+  .btn--ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .btn__arrow {
+    transition: transform var(--duration-base) var(--ease-standard);
+  }
+
+  .btn:hover .btn__arrow {
+    transform: translateX(2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn:hover .btn__arrow {
+      transform: none;
+    }
+  }
+</style>

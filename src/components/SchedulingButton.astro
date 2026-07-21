@@ -1,0 +1,16 @@
+---
+interface Props {
+  label?: string;
+  class?: string;
+}
+
+const { label = "Let's Talk", class: className } = Astro.props;
+---
+
+<span class:list={["scheduling-button", className]} data-scheduling-button data-label={label} aria-hidden="true"></span>
+
+<style>
+  .scheduling-button {
+    display: none;
+  }
+</style>

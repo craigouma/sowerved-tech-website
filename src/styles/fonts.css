@@ -1,0 +1,24 @@
+/* Computer Modern (Latin Modern successor), self hosted. SIL OFL 1.1, see /fonts/OFL.txt */
+@font-face {
+  font-family: "Computer Modern Serif";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/cmu-serif-regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Computer Modern Serif";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/cmu-serif-bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Computer Modern Typewriter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/cmu-typewriter-regular.woff2") format("woff2");
+}

@@ -1,0 +1,210 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+h1, h2, h3, h4 {
+  color: var(--text);
+  margin: 0;
+}
+
+h1, h2 {
+  font-family: var(--font-serif);
+}
+
+h3, h4 {
+  font-family: var(--font-sans);
+  font-weight: 500;
+}
+
+h1 {
+  font-size: var(--fs-display);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: var(--fs-h2);
+  line-height: 1.15;
+  letter-spacing: -0.005em;
+  font-weight: 400;
+}
+
+h3 {
+  font-size: var(--fs-h3);
+  line-height: 1.25;
+}
+
+p {
+  margin: 0;
+  max-width: 33em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+ul, ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+}
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* Google Calendar scheduling button: restyled to match Button.astro's primary variant */
+.qxCTlb {
+  font-family: var(--font-sans) !important;
+  font-weight: 500 !important;
+  font-size: var(--fs-small) !important;
+  letter-spacing: normal !important;
+  line-height: 1 !important;
+  border-radius: var(--radius) !important;
+  padding: var(--space-4) var(--space-6) !important;
+  height: auto !important;
+  min-width: 0 !important;
+  box-shadow: none !important;
+  transition: background-color var(--duration-base) var(--ease-standard) !important;
+}
+
+.qxCTlb:hover {
+  background-color: var(--accent-hover) !important;
+}
+
+.qxCTlb::after {
+  content: "\2192";
+  display: inline-block;
+  margin-left: var(--space-2);
+  transition: transform var(--duration-base) var(--ease-standard);
+}
+
+.qxCTlb:hover::after {
+  transform: translateX(2px);
+}
+
+.nav__cta + .qxCTlb {
+  padding: var(--space-3) var(--space-5) !important;
+}
+
+.nav-drawer__cta-btn + .qxCTlb {
+  width: 100%;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qxCTlb:hover::after {
+    transform: none;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--space-4);
+  top: -48px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  z-index: 100;
+  transition: top var(--duration-base) var(--ease-standard);
+}
+
+.skip-link:focus {
+  top: var(--space-4);
+}
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity var(--duration-reveal) ease-out,
+    transform var(--duration-reveal) ease-out;
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}

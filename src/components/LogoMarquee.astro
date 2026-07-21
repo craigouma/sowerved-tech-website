@@ -1,0 +1,147 @@
+---
+import fs from "node:fs";
+import path from "node:path";
+
+const KNOWN_CLIENTS = [
+  "AIBBC",
+  "SPRBS",
+  "WPMHCBO",
+  "ThinkZ Tutoring",
+  "St. Elizabeth Care",
+  "Leopard View Hotel",
+];
+
+const logosDir = path.resolve("public/logos");
+const extensions = [".svg", ".png", ".webp"];
+
+function slugify(name: string) {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}
+
+let files: string[] = [];
+try {
+  files = fs.readdirSync(logosDir);
+} catch {
+  files = [];
+}
+
+const logos = KNOWN_CLIENTS.map((name) => {
+  const slug = slugify(name);
+  const match = files.find((file) => {
+    const ext = path.extname(file).toLowerCase();
+    return extensions.includes(ext) && path.basename(file, ext).toLowerCase() === slug;
+  });
+  return match ? { name, src: `/logos/${match}` } : null;
+}).filter((logo): logo is { name: string; src: string } => logo !== null);
+
+const track = [...logos, ...logos];
+---
+
+{logos.length > 0 ? (
+  <div class="marquee" data-reveal>
+    <div class="marquee__track">
+      {track.map((logo) => (
+        <div class="marquee__item">
+          <img src={logo.src} alt={logo.name} loading="lazy" width="140" height="48" />
+        </div>
+      ))}
+    </div>
+    <div class="marquee__grid" aria-hidden="true">
+      {logos.map((logo) => (
+        <div class="marquee__item">
+          <img src={logo.src} alt="" loading="lazy" width="140" height="48" />
+        </div>
+      ))}
+    </div>
+  </div>
+) : (
+  <p class="marquee__placeholder">Client logos pending. Add files to /public/logos.</p>
+)}
+
+<style>
+  .marquee {
+    position: relative;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 8%,
+      black 92%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 8%,
+      black 92%,
+      transparent
+    );
+  }
+
+  .marquee__track {
+    display: flex;
+    align-items: center;
+    gap: var(--space-16);
+    width: max-content;
+    animation: scroll 32s linear infinite;
+  }
+
+  .marquee:hover .marquee__track {
+    animation-play-state: paused;
+  }
+
+  .marquee__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .marquee__item img {
+    height: 32px;
+    width: auto;
+    filter: grayscale(1) opacity(0.45);
+    transition: filter var(--duration-base) var(--ease-standard);
+  }
+
+  .marquee__item img:hover {
+    filter: grayscale(0) opacity(1);
+  }
+
+  .marquee__grid {
+    display: none;
+  }
+
+  .marquee__placeholder {
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    color: var(--text-subtle);
+  }
+
+  @keyframes scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee {
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+
+    .marquee__track {
+      display: none;
+    }
+
+    .marquee__grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--space-12);
+    }
+  }
+</style>

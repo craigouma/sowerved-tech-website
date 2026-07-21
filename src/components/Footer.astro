@@ -1,0 +1,129 @@
+---
+import {
+  NAV_LINKS,
+  SOCIAL,
+  CONTACT_EMAIL,
+  PHONE,
+  PHONE_HREF,
+  FOOTER_DESCRIPTION,
+} from "../config/site";
+
+const socialLinks = [
+  { label: "LinkedIn", href: SOCIAL.linkedin },
+  { label: "GitHub", href: SOCIAL.github },
+  { label: "X", href: SOCIAL.twitter },
+  { label: "Facebook", href: SOCIAL.facebook },
+  { label: "Instagram", href: SOCIAL.instagram },
+].filter((link) => link.href);
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <img src="/brand/logo-dark.png" alt="Sowerved Tech" width="110" height="35" />
+      <p class="footer__desc">{FOOTER_DESCRIPTION}</p>
+    </div>
+
+    <nav class="footer__links" aria-label="Footer">
+      <ul>
+        {NAV_LINKS.map((link) => (
+          <li><a href={link.href}>{link.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="footer__contact">
+      <p>
+        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+        {" "}&middot;{" "}
+        <a href={`tel:${PHONE_HREF}`}>{PHONE}</a>
+      </p>
+      {socialLinks.length > 0 && (
+        <p class="footer__social">
+          {socialLinks.map((link, i) => (
+            <>
+              <a href={link.href} target="_blank" rel="noopener noreferrer">{link.label}</a>
+              {i < socialLinks.length - 1 && <span aria-hidden="true"> &middot; </span>}
+            </>
+          ))}
+        </p>
+      )}
+    </div>
+  </div>
+
+  <div class="container">
+    <p class="footer__copy">&copy; {year} Sowerved Tech. Nairobi, Kenya.</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--border);
+    padding-block: var(--space-16) var(--space-8);
+  }
+
+  .footer__inner {
+    display: grid;
+    grid-template-columns: 1.4fr 0.6fr 1fr;
+    gap: var(--space-12);
+    padding-bottom: var(--space-16);
+  }
+
+  .footer__brand img {
+    height: 24px;
+    width: auto;
+    margin-bottom: var(--space-4);
+  }
+
+  .footer__desc {
+    font-size: var(--fs-small);
+    color: var(--text-subtle);
+    max-width: 28em;
+  }
+
+  .footer__links ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .footer__links a,
+  .footer__contact a {
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+    transition: color var(--duration-fast) var(--ease-standard);
+  }
+
+  .footer__links a:hover,
+  .footer__contact a:hover {
+    color: var(--accent);
+  }
+
+  .footer__contact {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    text-align: left;
+  }
+
+  .footer__social {
+    color: var(--text-subtle);
+  }
+
+  .footer__copy {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    color: var(--text-subtle);
+    border-top: 1px solid var(--border);
+    padding-top: var(--space-8);
+  }
+
+  @media (max-width: 720px) {
+    .footer__inner {
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+    }
+  }
+</style>
