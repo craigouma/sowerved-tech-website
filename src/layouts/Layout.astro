@@ -8,6 +8,7 @@ import {
   SITE_DESCRIPTION,
   GOOGLE_CALENDAR_BOOKING_URL,
   GA4_MEASUREMENT_ID,
+  SOCIAL,
 } from "../config/site";
 
 import sansRegular from "@fontsource/geist-sans/files/geist-sans-latin-400-normal.woff2?url";
@@ -26,7 +27,24 @@ const {
 
 const canonicalUrl = new URL(path, SITE_URL).toString();
 const ogImageUrl = new URL("/og/sowerved-og.png", SITE_URL).toString();
-const pageTitle = path === "/" ? title : `${title} | ${SITE_NAME}`;
+const logoUrl = new URL("/brand/logo-dark.png", SITE_URL).toString();
+const pageTitle = path === "/" ? title : `${title}: ${SITE_NAME}`;
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: SITE_NAME,
+  url: SITE_URL,
+  logo: logoUrl,
+  description: SITE_DESCRIPTION,
+  foundingLocation: {
+    "@type": "Place",
+    name: "Nairobi, Kenya",
+  },
+  sameAs: [SOCIAL.linkedin, SOCIAL.github, SOCIAL.twitter, SOCIAL.facebook, SOCIAL.instagram].filter(
+    Boolean
+  ),
+};
 ---
 
 <!doctype html>
@@ -34,6 +52,15 @@ const pageTitle = path === "/" ? title : `${title} | ${SITE_NAME}`;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="preconnect" href="https://app.secureprivacy.ai" />
+    <link rel="preconnect" href="https://api-prod.secureprivacy.ai" crossorigin />
+    <link rel="preconnect" href="https://www.googletagmanager.com" />
+    <link rel="preconnect" href="https://www.google-analytics.com" />
+    <link rel="dns-prefetch" href="https://app.secureprivacy.ai" />
+    <link rel="dns-prefetch" href="https://api-prod.secureprivacy.ai" />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="dns-prefetch" href="https://www.google-analytics.com" />
 
     <!-- Secure Privacy consent banner -->
     <script is:inline src="https://app.secureprivacy.ai/script/6a5fce8fc77c65fa57eaf1f9.js"></script>
@@ -46,6 +73,7 @@ const pageTitle = path === "/" ? title : `${title} | ${SITE_NAME}`;
         dataLayer.push(arguments);
       };
       gtag("js", new Date());
+      gtag("set", "linker", { domains: [], accept_incoming: false });
       gtag("config", GA4_MEASUREMENT_ID);
     </script>
 
@@ -55,7 +83,9 @@ const pageTitle = path === "/" ? title : `${title} | ${SITE_NAME}`;
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <link rel="preload" as="font" type="font/woff2" href={sansRegular} crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/cmu-serif-bold.woff2" crossorigin />
@@ -74,6 +104,8 @@ const pageTitle = path === "/" ? title : `${title} | ${SITE_NAME}`;
     <meta name="twitter:image" content={ogImageUrl} />
 
     <meta name="theme-color" content="#FFFFFF" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
 
     <script is:inline>
       (function () {

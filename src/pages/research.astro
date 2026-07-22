@@ -1,0 +1,201 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Eyebrow from "../components/Eyebrow.astro";
+import SchedulingButton from "../components/SchedulingButton.astro";
+import { RESEARCH_PAPERS, SCHOLAR_URL, FOUNDER_NAME } from "../config/site";
+
+const paperSchemas = RESEARCH_PAPERS.map((paper) => ({
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  headline: paper.title,
+  author: {
+    "@type": "Person",
+    name: FOUNDER_NAME,
+  },
+  url: paper.project,
+}));
+---
+
+<Layout
+  title="Research"
+  description="Published machine learning research on neonatal monitoring, ECG classification, and credit default, with open code and data."
+  path="/research"
+>
+  {paperSchemas.map((schema) => (
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  ))}
+
+  <section class="intro">
+    <div class="container intro__inner">
+      <Eyebrow>Research</Eyebrow>
+      <h1 class="intro__heading">Published research.</h1>
+      <p class="intro__lead">
+        Preprints on machine learning for healthcare, cardiology, and credit, each with
+        open code and data.
+      </p>
+      {SCHOLAR_URL && (
+        <a
+          class="intro__scholar"
+          href={SCHOLAR_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Scholar &rarr;
+        </a>
+      )}
+    </div>
+  </section>
+
+  <section class="papers">
+    <div class="container">
+      <ul class="papers-list">
+        {RESEARCH_PAPERS.map((paper) => (
+          <li class="paper" data-reveal>
+            <h2 class="paper__title">{paper.title}</h2>
+            <p class="paper__summary">{paper.summary}</p>
+            <p class="paper__meta">{paper.meta}</p>
+            <p class="paper__links">
+              {paper.paper && (
+                <a href={paper.paper} target="_blank" rel="noopener noreferrer">Paper</a>
+              )}
+              {paper.code && (
+                <a href={paper.code} target="_blank" rel="noopener noreferrer">Code</a>
+              )}
+              {paper.project && (
+                <a href={paper.project} target="_blank" rel="noopener noreferrer">Project</a>
+              )}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="cta-band">
+    <div class="container cta-band__inner">
+      <div>
+        <h2>Have something in mind?</h2>
+        <p class="cta-band__line">Book a short call and tell us what you are building.</p>
+      </div>
+      <SchedulingButton />
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .intro {
+    padding-block: calc(var(--section-pad) * 0.6) var(--space-16);
+  }
+
+  .intro__inner {
+    max-width: 42em;
+  }
+
+  .intro__heading {
+    margin-top: var(--space-5);
+  }
+
+  .intro__lead {
+    margin-top: var(--space-6);
+    font-size: var(--fs-body);
+    color: var(--text-muted);
+    max-width: 40em;
+  }
+
+  .intro__scholar {
+    display: inline-block;
+    margin-top: var(--space-6);
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: 0.04em;
+    color: var(--text-subtle);
+    transition: color var(--duration-fast) var(--ease-standard);
+  }
+
+  .intro__scholar:hover {
+    color: var(--accent);
+  }
+
+  .papers {
+    padding-block: 0 var(--section-pad);
+  }
+
+  .papers-list {
+    display: flex;
+    flex-direction: column;
+    max-width: 46em;
+  }
+
+  .paper {
+    padding-block: var(--space-10);
+    border-top: 1px solid var(--border);
+  }
+
+  .paper:last-child {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .paper__title {
+    font-family: var(--font-serif);
+    font-size: var(--fs-h3);
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .paper__summary {
+    margin-top: var(--space-3);
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+    max-width: none;
+  }
+
+  .paper__meta {
+    margin-top: var(--space-4);
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    color: var(--text-subtle);
+  }
+
+  .paper__links {
+    margin-top: var(--space-3);
+    display: flex;
+    gap: var(--space-4);
+  }
+
+  .paper__links a {
+    font-size: var(--fs-small);
+    color: var(--accent);
+    transition: color var(--duration-fast) var(--ease-standard);
+  }
+
+  .paper__links a:hover {
+    color: var(--accent-hover);
+  }
+
+  .cta-band {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding-block: var(--space-20);
+  }
+
+  .cta-band__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-8);
+    flex-wrap: wrap;
+  }
+
+  .cta-band__line {
+    margin-top: var(--space-3);
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 640px) {
+    .cta-band__inner {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

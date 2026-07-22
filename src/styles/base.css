@@ -109,6 +109,21 @@ button {
   color: var(--accent);
 }
 
+/* Secure Privacy consent banner: force it to the bottom of the viewport.
+   Its own script sometimes anchors the iframe partway up the page in Safari. */
+#ifrmCookieBanner {
+  position: fixed !important;
+  top: auto !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+}
+
+#sp-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+}
+
 /* Google Calendar scheduling button: restyled to match Button.astro's primary variant */
 .qxCTlb {
   font-family: var(--font-sans) !important;
@@ -146,6 +161,19 @@ button {
 .nav-drawer__cta-btn + .qxCTlb {
   width: 100%;
   text-align: center;
+}
+
+/* Ghost variant: used where a scheduling button needs to read as the secondary
+   action next to a solid primary button, e.g. the 404 page. */
+.not-found__cta + .qxCTlb {
+  background: transparent !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+}
+
+.not-found__cta + .qxCTlb:hover {
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
 }
 
 @media (max-width: 720px) {

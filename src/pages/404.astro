@@ -1,0 +1,57 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Eyebrow from "../components/Eyebrow.astro";
+import Button from "../components/Button.astro";
+import SchedulingButton from "../components/SchedulingButton.astro";
+---
+
+<Layout
+  title="Page not found"
+  description="This page moved, or never existed. Head back to Sowerved Tech's home page."
+  path="/404"
+>
+  <section class="not-found">
+    <div class="container not-found__inner">
+      <Eyebrow>404</Eyebrow>
+      <h1 class="not-found__heading">This page moved, or never existed.</h1>
+      <p class="not-found__lead">
+        Check the address, or head back and find your way from there.
+      </p>
+      <div class="not-found__actions">
+        <Button href="/" variant="primary" arrow>
+          Back home
+        </Button>
+        <SchedulingButton class="not-found__cta" />
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .not-found {
+    min-height: calc(70vh - var(--nav-height));
+    display: flex;
+    align-items: center;
+  }
+
+  .not-found__inner {
+    max-width: 36em;
+  }
+
+  .not-found__heading {
+    margin-top: var(--space-5);
+  }
+
+  .not-found__lead {
+    margin-top: var(--space-6);
+    font-size: var(--fs-body);
+    color: var(--text-muted);
+  }
+
+  .not-found__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-top: var(--space-10);
+  }
+</style>

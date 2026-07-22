@@ -4,6 +4,16 @@ import Section from "../components/Section.astro";
 import Eyebrow from "../components/Eyebrow.astro";
 import SchedulingButton from "../components/SchedulingButton.astro";
 import TeamCard from "../components/TeamCard.astro";
+import { SITE_URL, FOUNDER_NAME, FOUNDER_LINKEDIN, SCHOLAR_URL, SOCIAL } from "../config/site";
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: FOUNDER_NAME,
+  jobTitle: "Founder",
+  url: new URL("/studio", SITE_URL).toString(),
+  sameAs: [SOCIAL.github, SCHOLAR_URL, FOUNDER_LINKEDIN].filter(Boolean),
+};
 
 const values = [
   {
@@ -58,6 +68,7 @@ const team = [
   {
     name: "Blair",
     role: "Full-Stack Software Engineer",
+    photo: "/team/blair.webp",
     linkedin: "https://www.linkedin.com/in/blairmuhindi/",
   },
 ];
@@ -65,9 +76,11 @@ const team = [
 
 <Layout
   title="Studio"
-  description="Sowerved Tech is a small senior team building intelligent software, websites, data systems, and machine learning across three continents, from Nairobi, Kenya."
+  description="A small senior team building intelligent software. Meet the people behind the work and how we operate."
   path="/studio"
 >
+  <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+
   <section class="intro">
     <div class="container intro__inner">
       <Eyebrow>Studio</Eyebrow>
