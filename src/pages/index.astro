@@ -6,6 +6,7 @@ import Button from "../components/Button.astro";
 import SchedulingButton from "../components/SchedulingButton.astro";
 import ServiceCard from "../components/ServiceCard.astro";
 import LogoMarquee from "../components/LogoMarquee.astro";
+import { SELECTED_WORK } from "../config/site";
 
 const services = [
   {
@@ -106,8 +107,8 @@ const howWeWork = [
 ---
 
 <Layout
-  title="Sowerved Tech: where software meets intelligence"
-  description="We build software, websites, data systems, and machine learning for businesses and healthcare organizations. Practical engineering from a small senior team in Nairobi."
+  title="Sowerved Tech: software, web, and machine learning"
+  description="A small senior studio building software, websites, data systems, and machine learning for businesses and healthcare organizations. Based in Nairobi, delivered worldwide."
   path="/"
 >
   <section class="hero">
@@ -150,6 +151,26 @@ const howWeWork = [
         </div>
       ))}
     </div>
+  </Section>
+
+  <Section eyebrow="Selected work" heading="A few things we have shipped.">
+    <ul class="selected-work">
+      {SELECTED_WORK.map((item) => (
+        <li class="selected-work__item" data-reveal>
+          <span class="selected-work__desc">{item.description}</span>
+          {item.linkHref && (
+            <a
+              class="selected-work__link"
+              href={item.linkHref}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {item.linkLabel}&nbsp;&rarr;
+            </a>
+          )}
+        </li>
+      ))}
+    </ul>
   </Section>
 
   <Section eyebrow="Trusted by" heading="Teams we have built with.">
@@ -233,6 +254,41 @@ const howWeWork = [
     margin-top: var(--space-2);
     font-size: var(--fs-small);
     color: var(--text-muted);
+  }
+
+  .selected-work {
+    display: flex;
+    flex-direction: column;
+    max-width: 46em;
+  }
+
+  .selected-work__item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-4);
+    padding-block: var(--space-5);
+    border-top: 1px solid var(--border);
+  }
+
+  .selected-work__item:last-child {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .selected-work__desc {
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+  }
+
+  .selected-work__link {
+    font-size: var(--fs-small);
+    color: var(--accent);
+    white-space: nowrap;
+    transition: color var(--duration-fast) var(--ease-standard);
+  }
+
+  .selected-work__link:hover {
+    color: var(--accent-hover);
   }
 
   .cta-band {
