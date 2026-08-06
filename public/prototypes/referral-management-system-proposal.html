@@ -1,0 +1,2574 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digital Referral System — prototype — SY-JO 0041</title>
+<meta name="description" content="Clickable bilingual prototype of an inter-agency referral management system. Synthetic data only.">
+<!-- Prototype for tender SY-JO 0041. Self-contained: opens and runs from file:// with no
+     build step, no server and no network request of any kind. The commented, sectioned
+     source this file is assembled from is delivered alongside it in build/ (i18n, seed,
+     core, shell, views1-3, styles.css); only comments and indentation are stripped here,
+     to hold the delivered file as small as possible. -->
+<style>
+:root{--ink-900:#1a1d21;--ink-700:#3d434b;--ink-500:#6b7280;--ink-300:#cbd0d6;--ink-200:#e2e6ea;--ink-100:#f1f3f5;--ink-050:#f8f9fa;--surface:#ffffff;--accent-800:#10403c;--accent-700:#16544f;--accent-600:#1d6b64;--accent-100:#e6efee;--status-submitted:#6b7280;--status-received:#1d6b64;--status-accepted:#2563a8;--status-progress:#8a6100;--status-delivered:#2f6b3a;--status-closed:#3d434b;--status-rejected:#9b2c2c;--urgency-normal:#6b7280;--urgency-urgent:#8a6100;--urgency-emergency:#9b2c2c;--radius:3px;--border:1px solid var(--ink-300);--rule:1px solid var(--ink-200);--font-latin:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--font-arabic:"Segoe UI",Tahoma,"Geeza Pro","Noto Naskh Arabic","Arabic Typesetting",sans-serif;--font-mono:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;--sidebar-w:220px;--shadow:0 2px 6px rgba(26,29,33,0.18)}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:var(--font-latin);font-size:13px;line-height:1.45;color:var(--ink-900);background:var(--ink-050);-webkit-text-size-adjust:100%}
+html[lang="ar"] body{font-family:var(--font-arabic);line-height:1.7}
+h1,h2,h3,h4{margin:0;font-weight:600}
+p{margin:0 0 8px}
+a{color:var(--accent-700);text-decoration:underline;text-underline-offset:2px}
+a:hover{color:var(--accent-800)}
+:focus-visible{outline:2px solid var(--accent-600);outline-offset:1px}
+.mono{font-family:var(--font-mono);font-size:12px;font-weight:500}
+.meta{font-size:12px;color:var(--ink-500)}
+.muted{color:var(--ink-500)}
+.nowrap{white-space:nowrap}
+.right{text-align:end}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.demo-banner{display:flex;align-items:center;gap:10px;background:var(--accent-800);color:#eef4f3;font-size:12px;padding:6px 16px}
+.demo-banner button{margin-inline-start:auto;background:none;border:1px solid rgba(255,255,255,.35);color:#eef4f3;border-radius:var(--radius);font-size:11px;padding:1px 6px;cursor:pointer;font-family:inherit}
+.demo-banner button:hover{background:rgba(255,255,255,.12)}
+.app{display:flex;min-height:100%;align-items:stretch}
+.sidebar{width:var(--sidebar-w);flex:0 0 var(--sidebar-w);background:var(--surface);border-inline-end:var(--border);display:flex;flex-direction:column;position:sticky;top:0;align-self:flex-start;height:100vh}
+.brand{padding:12px 14px;border-block-end:var(--border);display:flex;align-items:center;gap:8px}
+.brand-mark{width:22px;height:22px;flex:none;border-radius:var(--radius);background:var(--accent-700);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;letter-spacing:.02em}
+.brand-name{font-size:13px;font-weight:600;line-height:1.25}
+.brand-sub{font-size:11px;color:var(--ink-500)}
+.nav{padding:8px 0;overflow-y:auto;flex:1 1 auto}
+.nav-group-label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-500);padding:10px 14px 4px}
+.nav a{display:flex;align-items:center;gap:9px;padding:6px 14px;font-size:13px;color:var(--ink-700);text-decoration:none;border-inline-start:3px solid transparent}
+.nav a:hover{background:var(--ink-100);color:var(--ink-900)}
+.nav a.active{background:var(--accent-100);color:var(--accent-800);font-weight:600;border-inline-start-color:var(--accent-600)}
+.nav a svg{flex:none;color:var(--ink-500)}
+.nav a.active svg{color:var(--accent-700)}
+.nav-count{margin-inline-start:auto;font-size:11px;font-family:var(--font-mono);color:var(--ink-500);background:var(--ink-100);border-radius:var(--radius);padding:0 4px}
+.sidebar-foot{border-block-start:var(--border);padding:8px 14px}
+.app.rail .sidebar{width:52px;flex:0 0 52px}
+.sidebar{transition:width 120ms ease,flex-basis 120ms ease}
+.app.rail .brand-name,.app.rail .brand-sub,.app.rail .nav a span,.app.rail .nav-group-label,.app.rail .nav-count,.app.rail .sidebar-foot button span{display:none}
+.app.rail .brand{justify-content:center;padding:12px 0}
+.app.rail .nav a{justify-content:center;padding:8px 0}
+.app.rail .sidebar-foot{display:flex;justify-content:center;padding:8px 0}
+.sidebar-foot button{background:none;border:0;padding:0;font:inherit;font-size:12px;color:var(--accent-700);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--surface);border-block-end:var(--border);padding:8px 20px;position:sticky;top:0;z-index:30}
+.topbar .spacer{margin-inline-start:auto}
+.switcher{display:flex;align-items:center;gap:6px}
+.switcher label{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-500)}
+.lang-toggle{display:flex;border:var(--border);border-radius:var(--radius);overflow:hidden}
+.lang-toggle button{font:inherit;font-size:12px;padding:3px 9px;background:var(--surface);border:0;cursor:pointer;color:var(--ink-700)}
+.lang-toggle button + button{border-inline-start:var(--border)}
+.lang-toggle button[aria-pressed="true"]{background:var(--accent-700);color:#fff;font-weight:600}
+.icon-btn{position:relative;background:var(--surface);border:var(--border);border-radius:var(--radius);padding:4px 6px;cursor:pointer;color:var(--ink-700);display:flex;align-items:center}
+.icon-btn:hover{background:var(--ink-100)}
+.badge-count{position:absolute;inset-block-start:-6px;inset-inline-end:-6px;background:var(--status-rejected);color:#fff;font-size:10px;font-weight:600;border-radius:8px;min-width:15px;text-align:center;padding:0 3px;font-family:var(--font-mono)}
+.user-chip{display:flex;align-items:center;gap:8px;font-size:12px}
+.user-chip .who{line-height:1.25}
+.user-chip .who b{display:block;font-size:12px;font-weight:600}
+.content{padding:20px 24px 40px;flex:1 1 auto}
+.breadcrumbs{font-size:12px;color:var(--ink-500);margin-block-end:8px;display:flex;gap:6px;flex-wrap:wrap}
+.breadcrumbs a{color:var(--ink-500)}
+.breadcrumbs .sep::after{content:"/"}
+html[dir="rtl"] .breadcrumbs .sep::after{content:"\\\\";content:"/"}
+.page-head{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-block-end:14px}
+.page-title{font-size:20px;font-weight:600}
+.page-sub{font-size:12px;color:var(--ink-500);margin-block-start:2px}
+.page-head .actions{margin-inline-start:auto;display:flex;gap:8px;flex-wrap:wrap}
+.panel{background:var(--surface);border:var(--border);border-radius:var(--radius)}
+.panel + .panel{margin-block-start:16px}
+.panel-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:9px 12px;border-block-end:var(--rule);background:var(--ink-050)}
+.panel-head h2,.panel-head h3{font-size:15px}
+.panel-head .actions{margin-inline-start:auto;display:flex;gap:8px}
+.panel-body{padding:12px}
+.grid{display:grid;gap:16px}
+.btn{font:inherit;font-size:13px;line-height:1.2;padding:6px 11px;border-radius:var(--radius);border:var(--border);background:var(--surface);color:var(--ink-900);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background 120ms ease,border-color 120ms ease}
+.btn:hover{background:var(--ink-100)}
+.btn-primary{background:var(--accent-700);border-color:var(--accent-800);color:#fff;font-weight:600}
+.btn-primary:hover{background:var(--accent-800)}
+.btn-danger{border-color:#c98a8a;color:var(--status-rejected)}
+.btn-danger:hover{background:#fbf0f0}
+.btn-sm{font-size:12px;padding:3px 8px}
+.btn[disabled],.btn[aria-disabled="true"]{opacity:.5;cursor:not-allowed}
+.btn-link{background:none;border:0;padding:0;color:var(--accent-700);text-decoration:underline;text-underline-offset:2px;cursor:pointer;font:inherit;font-size:12px}
+.field{margin-block-end:12px}
+.field>label,.field-label{display:block;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-700);margin-block-end:4px}
+input[type="text"],input[type="email"],input[type="password"],input[type="number"],input[type="date"],input[type="search"],select,textarea{font:inherit;font-size:13px;width:100%;padding:5px 8px;border:var(--border);border-radius:var(--radius);background:var(--surface);color:var(--ink-900)}
+textarea{resize:vertical;min-height:70px;line-height:1.5}
+select{padding-inline-end:22px}
+input:hover,select:hover,textarea:hover{border-color:var(--ink-500)}
+.help{font-size:12px;color:var(--ink-500);margin-block-start:3px}
+.err{font-size:12px;color:var(--status-rejected);margin-block-start:3px;font-weight:500}
+.invalid{border-color:var(--status-rejected)}
+.check{display:flex;align-items:flex-start;gap:7px;font-size:13px;margin-block-end:6px}
+.check input{margin:2px 0 0;flex:none}
+.check label{font-weight:400;text-transform:none;letter-spacing:0;font-size:13px}
+.radio-row{display:flex;gap:16px;flex-wrap:wrap}
+.form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+fieldset{border:var(--rule);border-radius:var(--radius);padding:10px 12px;margin:0 0 12px}
+legend{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-700);padding:0 4px}
+.table-wrap{overflow-x:auto}
+table.data{width:100%;border-collapse:collapse;font-size:13px}
+table.data th,table.data td{padding:6px 10px;text-align:start;vertical-align:top;border-block-end:var(--rule)}
+table.data thead th{background:var(--ink-100);font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-700);white-space:nowrap;border-block-end:var(--border);position:sticky;top:0;z-index:1}
+table.data tbody tr:hover{background:var(--ink-050)}
+table.data tbody tr.clickable{cursor:pointer}
+table.data td.num,table.data th.num{text-align:end;font-variant-numeric:tabular-nums}
+table.data tr.row-overdue td:first-child{border-inline-start:3px solid var(--status-rejected)}
+table.data th.sortable{cursor:pointer;user-select:none}
+table.data th.sortable:hover{background:var(--ink-200)}
+.sort-caret{font-size:9px;color:var(--ink-500);margin-inline-start:3px}
+.sticky-first td:first-child,.sticky-first th:first-child{position:sticky;inset-inline-start:0;background:var(--surface)}
+.sticky-first thead th:first-child{background:var(--ink-100);z-index:2}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:1px 6px;border-radius:var(--radius);white-space:nowrap;border:1px solid currentColor}
+.badge .dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex:none}
+.tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-500);border:1px dashed var(--ink-300);border-radius:var(--radius);padding:0 5px}
+.postmvp{border:1px dashed var(--ink-300);border-radius:var(--radius);padding:9px 11px;color:var(--ink-500);background:var(--ink-050)}
+.postmvp-head{display:flex;align-items:center;gap:8px;margin-block-end:3px}
+.postmvp-head b{font-size:13px;font-weight:600;color:var(--ink-500)}
+.postmvp p{font-size:12px;margin:0}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));border:var(--border);border-radius:var(--radius);background:var(--surface)}
+.metric{padding:12px 14px;border-inline-end:var(--rule)}
+.metric:last-child{border-inline-end:0}
+.metric .v{font-size:26px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums}
+.metric .k{font-size:12px;color:var(--ink-500);margin-block-start:2px}
+.metric.alert .v{color:var(--status-rejected)}
+.filters{display:grid;gap:8px;padding:10px 12px;background:var(--ink-050);border-block-end:var(--rule);grid-template-columns:repeat(auto-fit,minmax(140px,1fr));align-items:end}
+.filters .field{margin:0}
+.filters .field>label{font-size:11px}
+.result-count{font-size:12px;color:var(--ink-500);padding:7px 12px;border-block-end:var(--rule);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.tabs{display:flex;gap:0;border-block-end:var(--border);background:var(--surface)}
+.tabs button{font:inherit;font-size:13px;background:none;border:0;cursor:pointer;padding:8px 13px;color:var(--ink-700);border-block-end:2px solid transparent;margin-block-end:-1px}
+.tabs button:hover{background:var(--ink-100)}
+.tabs button[aria-selected="true"]{color:var(--accent-800);font-weight:600;border-block-end-color:var(--accent-600)}
+.pager{display:flex;align-items:center;gap:6px;padding:9px 12px;flex-wrap:wrap}
+.pager .info{font-size:12px;color:var(--ink-500);margin-inline-end:auto}
+.pager button{font:inherit;font-size:12px;min-width:26px;padding:2px 6px;cursor:pointer;border:var(--border);border-radius:var(--radius);background:var(--surface);color:var(--ink-700)}
+.pager button:hover{background:var(--ink-100)}
+.pager button[aria-current="page"]{background:var(--accent-700);border-color:var(--accent-800);color:#fff;font-weight:600}
+.pager button[disabled]{opacity:.45;cursor:not-allowed}
+.dir-icon{display:inline-flex}
+html[dir="rtl"] .dir-icon{transform:scaleX(-1)}
+.empty{padding:28px 16px;text-align:center;color:var(--ink-500)}
+.empty b{display:block;color:var(--ink-700);font-size:14px;margin-block-end:4px}
+.timeline{display:flex;gap:0;overflow-x:auto;padding:4px 0 0}
+.stage{flex:1 1 0;min-width:108px;padding-inline-end:8px}
+.stage .bar{height:4px;background:var(--ink-200);border-radius:2px;margin-block-end:6px}
+.stage.done .bar{background:var(--accent-600)}
+.stage.current .bar{background:var(--status-progress)}
+.stage .n{font-size:12px;font-weight:600;color:var(--ink-500)}
+.stage.done .n,.stage.current .n{color:var(--ink-900)}
+.stage .t{font-size:11px;color:var(--ink-500);font-family:var(--font-mono)}
+.detail{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;align-items:start}
+@media (max-width:1080px){.detail{grid-template-columns:minmax(0,1fr)}
+}
+.kv{display:grid;grid-template-columns:150px minmax(0,1fr);gap:4px 12px;font-size:13px}
+.kv dt{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-500)}
+.kv dd{margin:0}
+.locked{display:inline-flex;align-items:center;gap:5px;color:var(--ink-500);font-style:italic}
+.note{padding:9px 0;border-block-end:var(--rule)}
+.note:last-of-type{border-block-end:0}
+.note-head{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;margin-block-end:2px}
+.note-head b{font-size:12px;font-weight:600}
+.note-body{font-size:13px}
+.barlist{display:grid;gap:7px}
+.barrow{display:grid;grid-template-columns:150px minmax(0,1fr) 44px;gap:9px;align-items:center;font-size:12px}
+.bartrack{height:9px;background:var(--ink-100);border-radius:2px;overflow:hidden}
+.barfill{height:100%;background:var(--accent-600)}
+.barrow .pct{text-align:end;font-variant-numeric:tabular-nums;color:var(--ink-700)}
+.modal-backdrop{position:fixed;inset:0;background:rgba(26,29,33,.45);display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;z-index:100;overflow-y:auto}
+.modal{background:var(--surface);border:var(--border);border-radius:var(--radius);box-shadow:var(--shadow);width:100%;max-width:620px}
+.modal-head{display:flex;align-items:center;gap:10px;padding:10px 14px;border-block-end:var(--rule)}
+.modal-head h2{font-size:15px}
+.modal-head button{margin-inline-start:auto}
+.modal-body{padding:14px}
+.modal-foot{display:flex;gap:8px;justify-content:flex-end;padding:10px 14px;border-block-start:var(--rule);background:var(--ink-050)}
+.toasts{position:fixed;inset-block-end:14px;inset-inline-start:14px;display:flex;flex-direction:column;gap:8px;z-index:200;max-width:420px}
+.toast{background:var(--ink-900);color:#f4f6f7;border-radius:var(--radius);padding:9px 11px;font-size:12px;display:flex;gap:10px;align-items:flex-start;box-shadow:var(--shadow)}
+.toast b{display:block;font-size:13px;margin-block-end:2px}
+.toast button{margin-inline-start:auto;background:none;border:0;color:#b9c0c6;cursor:pointer;font:inherit;font-size:14px;line-height:1;padding:0 2px}
+.login-wrap{min-height:100vh;display:flex;flex-direction:column;background:var(--ink-050)}
+.login-bar{display:flex;align-items:center;gap:12px;padding:10px 20px;background:var(--surface);border-block-end:var(--border)}
+.login-main{flex:1 1 auto;display:flex;align-items:flex-start;justify-content:center;padding:48px 16px}
+.login-card{width:100%;max-width:380px;background:var(--surface);border:var(--border);border-radius:var(--radius)}
+.steps{display:flex;gap:0;border:var(--border);border-radius:var(--radius);background:var(--surface);overflow:hidden;margin-block-end:16px}
+.step{flex:1 1 0;padding:9px 12px;border-inline-end:var(--rule);min-width:130px}
+.step:last-child{border-inline-end:0}
+.step .sn{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-500)}
+.step .st{font-size:13px;color:var(--ink-500)}
+.step.done .st{color:var(--ink-700)}
+.step.active{background:var(--accent-100)}
+.step.active .sn{color:var(--accent-700)}
+.step.active .st{color:var(--accent-800);font-weight:600}
+.appfoot{padding:10px 24px;font-family:var(--font-mono);font-size:11px;color:var(--ink-500);border-block-start:var(--rule);display:flex;gap:14px;flex-wrap:wrap}
+@media (max-width:900px){.app{flex-direction:column}
+.app.rail .sidebar{width:100%;flex:none}
+.app.rail .nav a span,.app.rail .nav-group-label{display:none}
+.sidebar{width:100%;flex:none;height:auto;position:static;border-inline-end:0;border-block-end:var(--border)}
+.nav{display:flex;flex-wrap:wrap;padding:4px 6px}
+.nav-group-label{display:none}
+.nav a{border-inline-start:0;border-block-end:3px solid transparent;padding:6px 9px}
+.nav a.active{border-inline-start-color:transparent;border-block-end-color:var(--accent-600)}
+.nav-count{margin-inline-start:4px}
+.sidebar-foot{padding:6px 12px}
+.content{padding:14px 12px 32px}
+.topbar{padding:8px 12px}
+.table-wrap{max-width:100%}
+table.data th,table.data td{padding:6px 8px}
+}
+@media (max-width:620px){.metric{border-inline-end:0;border-block-end:var(--rule)}
+.page-head .actions{margin-inline-start:0}
+.kv{grid-template-columns:minmax(0,1fr)}
+.kv dd{margin-block-end:6px}
+}
+@media print{.sidebar,.topbar,.toasts,.demo-banner{display:none}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<noscript><p style="padding:20px;font-family:sans-serif">This prototype requires JavaScript. It makes no network requests.</p></noscript>
+<script>
+"use strict";
+const I18N = {
+en: {
+app_name: "Referral Management System",
+app_sub: "Syria Joint Response",
+banner: "Prototype for evaluation. Synthetic data only. Arabic strings indicative, pending localisation review by War Child Alliance.",
+dismiss: "Dismiss",
+nav_dashboard: "Dashboard", nav_referrals: "Referrals", nav_new_referral: "New Referral",
+nav_services: "Service Directory", nav_manage_services: "Manage My Services",
+nav_reports: "Reports", nav_users: "User Management", nav_audit: "Audit Trail",
+nav_settings: "Settings", nav_help: "Help and SOPs", nav_notifications: "Notifications",
+logout: "Log out", toggle_sidebar: "Collapse or expand navigation",
+group_case_work: "Case work", group_administration: "Administration",
+status_submitted: "Submitted", status_received: "Received", status_accepted: "Accepted",
+status_progress: "In Progress", status_delivered: "Service Delivered",
+status_closed: "Closed", status_rejected: "Rejected",
+urgency_normal: "Normal", urgency_urgent: "Urgent", urgency_emergency: "Emergency",
+action_accept: "Accept", action_reject: "Reject",
+action_request_info: "Request More Information", action_close: "Close Referral",
+action_advance: "Update Status", overdue: "Overdue", pending: "Pending", completed: "Completed",
+case_notes: "Case Notes", add_note: "Add Note",
+referring_partner: "Referring Partner", receiving_partner: "Receiving Partner",
+case_summary: "Case Summary", required_services: "Required Services",
+attachment: "Attachment", attachments: "Attachments", rejection_reason: "Reason for Rejection",
+consent: "Consent", informed_consent: "Informed Consent",
+consent_confirmed: "Client consent obtained", consent_type: "Consent Type",
+consent_verbal: "Verbal", consent_written: "Written",
+data_sharing_limits: "Data Sharing Limitations", data_protection: "Data Protection",
+retention_period: "Retention Period", recorded_by: "Recorded by",
+sector_protection: "Protection", sector_education: "Education", sector_health: "Health",
+sector_nutrition: "Nutrition", sector_mhpss: "MHPSS", sector_wash: "WASH",
+sector_shelter: "Shelter", sector_livelihoods: "Livelihoods",
+outcome_delivered: "Service delivered", outcome_unavailable: "Service not available",
+outcome_no_attend: "Client did not attend", outcome_declined: "Client declined",
+outcome_onward: "Referred onward",
+role_sysadmin: "System Administrator", role_partner_admin: "Partner Administrator",
+role_case_manager: "Case Manager", role_field_coord: "Field Coordinator",
+role_readonly: "Read Only and Reporting",
+search: "Search", filter: "Filter", clear_filters: "Clear Filters",
+export_excel: "Export to Excel", export_csv: "Export to CSV", save: "Save", cancel: "Cancel",
+submit: "Submit", back: "Back", next: "Next", edit: "Edit", view: "View",
+sector: "Sector", location: "Location", partner: "Partner", status: "Status",
+date: "Date", actions: "Actions", no_results: "No results found", close: "Close",
+all: "All", none: "None", yes: "Yes", no: "No", confirm: "Confirm", add: "Add",
+deactivate: "Deactivate", activate: "Activate", active: "Active", inactive: "Inactive",
+organisation: "Organisation", role: "Role", name: "Name", email: "Email", phone: "Phone",
+governorate: "Governorate", subdistrict: "Sub-district", target_group: "Target Group",
+operating_hours: "Operating Hours", eligibility: "Eligibility Criteria",
+description: "Description", contact_person: "Contact Person",
+last_updated: "Last updated", created: "Created", urgency: "Urgency",
+days_at_stage: "Days at stage", case_reference: "Case reference",
+from_date: "From date", to_date: "To date", any: "Any", required: "Required",
+optional: "Optional", timestamp: "Timestamp", user: "User", details: "Details",
+reset: "Reset", apply: "Apply", of: "of", page: "Page", rows: "rows",
+post_mvp: "Post-MVP", mvp_scope: "View MVP scope boundary",
+mvp_scope_title: "MVP scope boundary", in_mvp: "In MVP scope", out_mvp: "Post-MVP, out of scope",
+mvp_note: "Scope creep is the highest-rated delivery risk on this contract. The boundary below is the one proposed in the technical offer. Any item on the right requires a written change request agreed with War Child Alliance before work begins.",
+login_title: "Sign in", login_email: "Email address", login_password: "Password",
+login_continue: "Continue", login_mfa_title: "Two-factor authentication",
+login_mfa_label: "Six-digit code", login_mfa_hint: "Enter the code from your authenticator app.",
+login_demo_note: "Demo prototype. Any credentials will proceed.",
+login_verify: "Verify and sign in", login_back: "Use a different account",
+dash_pending: "Pending referrals", dash_active: "Active referrals",
+dash_completed_month: "Completed this month", dash_overdue: "Overdue",
+dash_avg_time: "Average processing time", days: "days", hours: "hours",
+dash_overdue_panel: "Overdue alerts", dash_volume: "Referral volume, last 30 days",
+dash_completion: "Completion rate by sector", dash_activity: "Recent activity",
+dash_partner_breakdown: "Partner breakdown", hours_overdue: "Hours overdue",
+no_overdue: "No referrals are past the overdue threshold.",
+tab_incoming: "Incoming", tab_outgoing: "Outgoing", tab_all: "All", tab_overdue: "Overdue",
+results_count: "referrals match the current filters",
+services_count: "services match the current filters",
+free_text_search: "Free text search",
+search_ph_referrals: "Case reference or summary text",
+step_consent: "Consent", step_case: "Case details", step_partner: "Receiving partner",
+step_review: "Review and submit", step: "Step",
+consent_intro: "No case data may be entered until informed consent is recorded. The client is consenting to their case information being shared with the receiving organisation named in this referral, for the purpose of receiving the service requested, and to that organisation recording the outcome.",
+consent_required_err: "Consent must be confirmed before continuing.",
+consent_limits_ph: "For example: do not share location with authorities; contact via female caseworker only.",
+sex: "Sex", sex_female: "Female", sex_male: "Male",
+age_group: "Age group", chars_remaining: "characters remaining",
+auto_reference: "Auto-generated case reference",
+attach_note: "No file is uploaded in this prototype. The file name and size are recorded for demonstration.",
+choose_file: "Choose file", no_file: "No file selected",
+select_service_intro: "Search the service directory and select the service this case is being referred to. The partner running the selected service becomes the receiving partner.",
+select: "Select", selected: "Selected",
+routing_note: "Automatic routing by service matching is a post-MVP feature. In the MVP the referring caseworker selects the receiving service.",
+review_intro: "Check every value before submitting. Use the edit links to return to a step.",
+submit_referral: "Submit referral",
+submitted_title: "Referral submitted",
+submitted_body: "The referral has been recorded and the receiving partner notified.",
+notification_sent: "Notification that would be sent",
+view_referral: "View referral", create_another: "Create another referral",
+err_required: "This field is required.", err_select: "Select an option.",
+err_summary: "Enter a case summary of at least 20 characters.",
+err_services: "Select at least one required service.",
+err_partner: "Select a receiving service.",
+stage_timeline: "Stage progression", acting_user: "Acting user",
+time_at_stage: "Time at current stage", overdue_warning: "Past the configured threshold",
+referring_org: "Referring organisation", receiving_org: "Receiving organisation",
+consent_record: "Consent record", audit_for_case: "Audit trail for this case",
+show_all: "Show all", show_less: "Show less",
+note_ph: "Record an update, a call attempt, or information requested.",
+note_added: "Note added to the case thread.",
+restricted: "Restricted by role",
+restricted_help: "Case-level personal detail is not available to the Read Only and Reporting role. Aggregate figures remain available in Reports.",
+reject_title: "Reject referral", reject_reason_label: "Reason for rejection",
+reject_notes_label: "Explanatory note to the referring partner",
+reject_err: "A rejection reason must be selected.",
+close_title: "Close referral", outcome: "Outcome", closure_notes: "Closure notes",
+close_err: "An outcome must be selected.",
+request_info_title: "Request more information",
+request_info_label: "What information is required?",
+advance_to: "Advance to",
+svc_title: "Service Directory", svc_name: "Service name",
+svc_refer: "Refer to this service", svc_manage: "Manage my services",
+svc_add: "Add service", svc_edit: "Edit service",
+svc_capacity_pm: "Real-time capacity and availability indicators",
+svc_capacity_pm_d: "Live places-available counts published by each partner and refreshed daily, so caseworkers can avoid referring to a full service.",
+rep_type: "Report type", rep_volume: "Referral volume", rep_completion: "Completion rates",
+rep_processing: "Processing time", rep_extract: "Service directory extract",
+rep_sadd: "SADD disaggregation", rep_preview: "Live preview",
+rep_note: "Figures are computed from the current data set, not stored. A customisable report builder and PDF export are post-MVP.",
+rep_total: "Total referrals", rep_completion_rate: "Completion rate",
+rep_avg_days: "Average days to close", rep_median_days: "Median days to close",
+users_title: "User Management", add_user: "Add user", last_active: "Last active",
+edit_role: "Edit role", reset_password: "Reset password",
+invite_note: "An invitation email would be sent to the address entered. No email is sent from this prototype.",
+audit_title: "Audit Trail",
+audit_note: "The audit log is append-only. No role, including System Administrator, can edit or delete an entry. Entries are retained for the full retention period and exported on request.",
+action_type: "Action type", entity: "Entity", ip_address: "IP address",
+set_notifications: "Notifications", set_overdue_threshold: "Overdue threshold",
+set_triggers: "Stage transitions that trigger an email", set_sender: "Sender address",
+set_retention: "Data retention", set_category: "Data category",
+set_anonymise: "Automated anonymisation", set_next_run: "Next scheduled anonymisation run",
+set_security: "Security", set_session: "Session timeout",
+set_mfa: "Multi-factor authentication enforcement", set_password_policy: "Password policy",
+set_localisation: "Localisation", set_default_lang: "Default language",
+set_date_format: "Date format", set_demo: "Demo controls",
+set_reset_demo: "Reset demo data", set_saved: "Setting updated.",
+minutes: "minutes", months: "months",
+notif_title: "Notifications", notif_recipient: "Recipient", notif_event: "Trigger event",
+notif_delivery: "Delivery status", notif_preview: "Email preview",
+notif_delivered: "Delivered", notif_queued: "Queued", notif_failed: "Failed, retrying",
+notif_subject: "Subject",
+help_title: "Help and Standard Operating Procedures",
+footer_weight: "Page weight", footer_no_requests: "No external requests",
+footer_offline: "Runs offline from file://",
+switch_role: "Role", switch_org: "Organisation",
+export_toast_title: "Export prepared",
+reset_done: "Demo data reset to its seeded state.",
+logout_toast: "Signed out of the prototype session.",
+not_permitted: "Your role does not permit this action.",
+no_access_title: "Not available for this role",
+no_access_body: "Switch role in the top bar to view this screen."
+},
+ar: {
+app_name: "نظام إدارة الإحالات",
+app_sub: "الاستجابة المشتركة في سوريا",
+banner: "نموذج أولي لأغراض التقييم. البيانات اصطناعية بالكامل. النصوص العربية استرشادية وبانتظار مراجعة الترجمة من War Child Alliance.",
+dismiss: "إغلاق",
+nav_dashboard: "لوحة المعلومات", nav_referrals: "الإحالات", nav_new_referral: "إحالة جديدة",
+nav_services: "دليل الخدمات", nav_manage_services: "إدارة خدماتي",
+nav_reports: "التقارير", nav_users: "إدارة المستخدمين", nav_audit: "سجل التدقيق",
+nav_settings: "الإعدادات", nav_help: "المساعدة وإجراءات التشغيل", nav_notifications: "الإشعارات",
+logout: "تسجيل الخروج", toggle_sidebar: "طي أو توسيع قائمة التنقل",
+group_case_work: "العمل على الحالات", group_administration: "الإدارة",
+status_submitted: "مُرسلة", status_received: "مُستلمة", status_accepted: "مقبولة",
+status_progress: "قيد التنفيذ", status_delivered: "تم تقديم الخدمة",
+status_closed: "مغلقة", status_rejected: "مرفوضة",
+urgency_normal: "عادي", urgency_urgent: "عاجل", urgency_emergency: "طارئ",
+action_accept: "قبول", action_reject: "رفض",
+action_request_info: "طلب معلومات إضافية", action_close: "إغلاق الإحالة",
+action_advance: "تحديث الحالة", overdue: "متأخرة", pending: "قيد الانتظار", completed: "مكتملة",
+case_notes: "ملاحظات الحالة", add_note: "إضافة ملاحظة",
+referring_partner: "الجهة المُحيلة", receiving_partner: "الجهة المُستقبِلة",
+case_summary: "ملخص الحالة", required_services: "الخدمات المطلوبة",
+attachment: "مرفق", attachments: "المرفقات", rejection_reason: "سبب الرفض",
+consent: "الموافقة", informed_consent: "الموافقة المستنيرة",
+consent_confirmed: "تم الحصول على موافقة المستفيد", consent_type: "نوع الموافقة",
+consent_verbal: "شفهية", consent_written: "كتابية",
+data_sharing_limits: "قيود مشاركة البيانات", data_protection: "حماية البيانات",
+retention_period: "فترة الاحتفاظ بالبيانات", recorded_by: "سُجلت بواسطة",
+sector_protection: "الحماية", sector_education: "التعليم", sector_health: "الصحة",
+sector_nutrition: "التغذية", sector_mhpss: "الصحة النفسية والدعم النفسي الاجتماعي",
+sector_wash: "المياه والإصحاح والنظافة", sector_shelter: "المأوى", sector_livelihoods: "سبل العيش",
+outcome_delivered: "تم تقديم الخدمة", outcome_unavailable: "الخدمة غير متوفرة",
+outcome_no_attend: "لم يحضر المستفيد", outcome_declined: "رفض المستفيد",
+outcome_onward: "تمت الإحالة إلى جهة أخرى",
+role_sysadmin: "مدير النظام", role_partner_admin: "مدير الشريك",
+role_case_manager: "مدير الحالة", role_field_coord: "منسق ميداني",
+role_readonly: "اطلاع فقط وإعداد التقارير",
+search: "بحث", filter: "تصفية", clear_filters: "مسح عوامل التصفية",
+export_excel: "تصدير إلى إكسل", export_csv: "تصدير إلى CSV", save: "حفظ", cancel: "إلغاء",
+submit: "إرسال", back: "رجوع", next: "التالي", edit: "تعديل", view: "عرض",
+sector: "القطاع", location: "الموقع", partner: "الشريك", status: "الحالة",
+date: "التاريخ", actions: "الإجراءات", no_results: "لا توجد نتائج", close: "إغلاق",
+all: "الكل", none: "لا شيء", yes: "نعم", no: "لا", confirm: "تأكيد", add: "إضافة",
+deactivate: "إلغاء التفعيل", activate: "تفعيل", active: "مفعّل", inactive: "غير مفعّل",
+organisation: "المنظمة", role: "الدور", name: "الاسم", email: "البريد الإلكتروني", phone: "الهاتف",
+governorate: "المحافظة", subdistrict: "الناحية", target_group: "الفئة المستهدفة",
+operating_hours: "ساعات العمل", eligibility: "معايير الأهلية",
+description: "الوصف", contact_person: "مسؤول الاتصال",
+last_updated: "آخر تحديث", created: "تاريخ الإنشاء", urgency: "درجة الأولوية",
+days_at_stage: "الأيام في المرحلة", case_reference: "رقم الحالة",
+from_date: "من تاريخ", to_date: "إلى تاريخ", any: "الكل", required: "مطلوب",
+optional: "اختياري", timestamp: "التوقيت", user: "المستخدم", details: "التفاصيل",
+reset: "إعادة تعيين", apply: "تطبيق", of: "من", page: "صفحة", rows: "صفوف",
+post_mvp: "ما بعد المرحلة الأولى", mvp_scope: "عرض حدود نطاق المرحلة الأولى",
+mvp_scope_title: "حدود نطاق المرحلة الأولى", in_mvp: "ضمن نطاق المرحلة الأولى",
+out_mvp: "ما بعد المرحلة الأولى، خارج النطاق",
+mvp_note: "توسّع النطاق هو أعلى مخاطر التنفيذ في هذا العقد. الحدود أدناه هي المقترحة في العرض الفني. أي بند في العمود الآخر يتطلب طلب تغيير خطي متفق عليه مع War Child Alliance قبل بدء العمل.",
+login_title: "تسجيل الدخول", login_email: "البريد الإلكتروني", login_password: "كلمة المرور",
+login_continue: "متابعة", login_mfa_title: "المصادقة الثنائية",
+login_mfa_label: "رمز من ستة أرقام", login_mfa_hint: "أدخل الرمز من تطبيق المصادقة.",
+login_demo_note: "نموذج أولي تجريبي. أي بيانات دخول ستتم قبولها.",
+login_verify: "تحقق وتسجيل الدخول", login_back: "استخدام حساب آخر",
+dash_pending: "إحالات قيد الانتظار", dash_active: "إحالات نشطة",
+dash_completed_month: "مكتملة هذا الشهر", dash_overdue: "متأخرة",
+dash_avg_time: "متوسط زمن المعالجة", days: "يوم", hours: "ساعة",
+dash_overdue_panel: "تنبيهات التأخر", dash_volume: "حجم الإحالات، آخر ٣٠ يوماً",
+dash_completion: "معدل الإنجاز حسب القطاع", dash_activity: "النشاط الأخير",
+dash_partner_breakdown: "التوزيع حسب الشريك", hours_overdue: "ساعات التأخر",
+no_overdue: "لا توجد إحالات تجاوزت حد التأخر.",
+tab_incoming: "واردة", tab_outgoing: "صادرة", tab_all: "الكل", tab_overdue: "متأخرة",
+results_count: "إحالة مطابقة لعوامل التصفية الحالية",
+services_count: "خدمة مطابقة لعوامل التصفية الحالية",
+free_text_search: "بحث نصي حر",
+search_ph_referrals: "رقم الحالة أو نص الملخص",
+step_consent: "الموافقة", step_case: "بيانات الحالة", step_partner: "الجهة المستقبِلة",
+step_review: "المراجعة والإرسال", step: "الخطوة",
+consent_intro: "لا يمكن إدخال أي بيانات عن الحالة قبل تسجيل الموافقة المستنيرة. يوافق المستفيد على مشاركة معلومات حالته مع المنظمة المستقبِلة المذكورة في هذه الإحالة، لغرض الحصول على الخدمة المطلوبة، وعلى قيام تلك المنظمة بتسجيل النتيجة.",
+consent_required_err: "يجب تأكيد الموافقة قبل المتابعة.",
+consent_limits_ph: "مثال: عدم مشاركة الموقع مع الجهات الرسمية؛ التواصل عبر عاملة حالة فقط.",
+sex: "الجنس", sex_female: "أنثى", sex_male: "ذكر",
+age_group: "الفئة العمرية", chars_remaining: "حرفاً متبقياً",
+auto_reference: "رقم الحالة المُولَّد تلقائياً",
+attach_note: "لا يتم رفع أي ملف في هذا النموذج الأولي. يُسجَّل اسم الملف وحجمه لأغراض العرض.",
+choose_file: "اختيار ملف", no_file: "لم يتم اختيار ملف",
+select_service_intro: "ابحث في دليل الخدمات واختر الخدمة التي تُحال إليها الحالة. تصبح المنظمة التي تقدم الخدمة المختارة هي الجهة المستقبِلة.",
+select: "اختيار", selected: "مختارة",
+routing_note: "التوجيه التلقائي بمطابقة الخدمات ميزة لما بعد المرحلة الأولى. في المرحلة الأولى يختار عامل الحالة الخدمة المستقبِلة.",
+review_intro: "راجع كل قيمة قبل الإرسال. استخدم روابط التعديل للعودة إلى أي خطوة.",
+submit_referral: "إرسال الإحالة",
+submitted_title: "تم إرسال الإحالة",
+submitted_body: "تم تسجيل الإحالة وإشعار الجهة المستقبِلة.",
+notification_sent: "الإشعار الذي سيتم إرساله",
+view_referral: "عرض الإحالة", create_another: "إنشاء إحالة أخرى",
+err_required: "هذا الحقل مطلوب.", err_select: "اختر أحد الخيارات.",
+err_summary: "أدخل ملخصاً للحالة لا يقل عن ٢٠ حرفاً.",
+err_services: "اختر خدمة مطلوبة واحدة على الأقل.",
+err_partner: "اختر الخدمة المستقبِلة.",
+stage_timeline: "تسلسل المراحل", acting_user: "المستخدم المنفِّذ",
+time_at_stage: "المدة في المرحلة الحالية", overdue_warning: "تجاوزت الحد المحدد",
+referring_org: "المنظمة المُحيلة", receiving_org: "المنظمة المُستقبِلة",
+consent_record: "سجل الموافقة", audit_for_case: "سجل التدقيق لهذه الحالة",
+show_all: "عرض الكل", show_less: "عرض أقل",
+note_ph: "سجّل تحديثاً أو محاولة اتصال أو معلومات مطلوبة.",
+note_added: "تمت إضافة الملاحظة إلى سجل الحالة.",
+restricted: "مقيّد حسب الدور",
+restricted_help: "بيانات الحالة الشخصية غير متاحة لدور الاطلاع وإعداد التقارير. تبقى الأرقام الإجمالية متاحة في التقارير.",
+reject_title: "رفض الإحالة", reject_reason_label: "سبب الرفض",
+reject_notes_label: "ملاحظة توضيحية للجهة المُحيلة",
+reject_err: "يجب اختيار سبب للرفض.",
+close_title: "إغلاق الإحالة", outcome: "النتيجة", closure_notes: "ملاحظات الإغلاق",
+close_err: "يجب اختيار نتيجة.",
+request_info_title: "طلب معلومات إضافية",
+request_info_label: "ما المعلومات المطلوبة؟",
+advance_to: "الانتقال إلى",
+svc_title: "دليل الخدمات", svc_name: "اسم الخدمة",
+svc_refer: "إحالة إلى هذه الخدمة", svc_manage: "إدارة خدماتي",
+svc_add: "إضافة خدمة", svc_edit: "تعديل الخدمة",
+svc_capacity_pm: "مؤشرات الطاقة الاستيعابية والتوافر اللحظي",
+svc_capacity_pm_d: "عدد الأماكن المتاحة تنشره كل منظمة ويُحدَّث يومياً، ليتجنب عامل الحالة الإحالة إلى خدمة مكتملة.",
+rep_type: "نوع التقرير", rep_volume: "حجم الإحالات", rep_completion: "معدلات الإنجاز",
+rep_processing: "زمن المعالجة", rep_extract: "مستخرج دليل الخدمات",
+rep_sadd: "التصنيف حسب الجنس والعمر", rep_preview: "معاينة مباشرة",
+rep_note: "تُحتسب الأرقام من مجموعة البيانات الحالية وليست مخزنة. منشئ التقارير القابل للتخصيص وتصدير PDF لما بعد المرحلة الأولى.",
+rep_total: "إجمالي الإحالات", rep_completion_rate: "معدل الإنجاز",
+rep_avg_days: "متوسط أيام الإغلاق", rep_median_days: "وسيط أيام الإغلاق",
+users_title: "إدارة المستخدمين", add_user: "إضافة مستخدم", last_active: "آخر نشاط",
+edit_role: "تعديل الدور", reset_password: "إعادة تعيين كلمة المرور",
+invite_note: "سيتم إرسال دعوة إلى البريد الإلكتروني المُدخل. لا يُرسل هذا النموذج الأولي أي بريد.",
+audit_title: "سجل التدقيق",
+audit_note: "سجل التدقيق قابل للإضافة فقط. لا يمكن لأي دور، بما في ذلك مدير النظام، تعديل أو حذف أي قيد. تُحفظ القيود طوال فترة الاحتفاظ وتُصدَّر عند الطلب.",
+action_type: "نوع الإجراء", entity: "الكيان", ip_address: "عنوان IP",
+set_notifications: "الإشعارات", set_overdue_threshold: "حد التأخر",
+set_triggers: "انتقالات المراحل التي تُطلق بريداً", set_sender: "عنوان المُرسِل",
+set_retention: "الاحتفاظ بالبيانات", set_category: "فئة البيانات",
+set_anonymise: "إخفاء الهوية الآلي", set_next_run: "موعد التشغيل التالي لإخفاء الهوية",
+set_security: "الأمان", set_session: "مهلة انتهاء الجلسة",
+set_mfa: "إلزام المصادقة الثنائية", set_password_policy: "سياسة كلمة المرور",
+set_localisation: "التوطين", set_default_lang: "اللغة الافتراضية",
+set_date_format: "صيغة التاريخ", set_demo: "أدوات العرض التجريبي",
+set_reset_demo: "إعادة تعيين بيانات العرض", set_saved: "تم تحديث الإعداد.",
+minutes: "دقيقة", months: "شهراً",
+notif_title: "الإشعارات", notif_recipient: "المستلم", notif_event: "الحدث المُطلِق",
+notif_delivery: "حالة التسليم", notif_preview: "معاينة البريد",
+notif_delivered: "تم التسليم", notif_queued: "في الانتظار", notif_failed: "فشل، تتم إعادة المحاولة",
+notif_subject: "الموضوع",
+help_title: "المساعدة وإجراءات التشغيل الموحدة",
+footer_weight: "حجم الصفحة", footer_no_requests: "لا توجد طلبات خارجية",
+footer_offline: "يعمل دون اتصال من file://",
+switch_role: "الدور", switch_org: "المنظمة",
+export_toast_title: "تم تجهيز التصدير",
+reset_done: "تمت إعادة بيانات العرض إلى حالتها الأصلية.",
+logout_toast: "تم تسجيل الخروج من جلسة النموذج الأولي.",
+not_permitted: "لا يسمح دورك بهذا الإجراء.",
+no_access_title: "غير متاح لهذا الدور",
+no_access_body: "بدّل الدور من الشريط العلوي لعرض هذه الشاشة."
+}
+};
+function t(key) {
+const d = I18N[state.lang] || I18N.en;
+return d[key] !== undefined ? d[key] : (I18N.en[key] !== undefined ? I18N.en[key] : key);
+}
+function makeRng(seed) {
+let a = seed >>> 0;
+return function () {
+a = (a + 0x6d2b79f5) >>> 0;
+let x = Math.imul(a ^ (a >>> 15), 1 | a);
+x = (x + Math.imul(x ^ (x >>> 7), 61 | x)) ^ x;
+return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+};
+}
+const ORGS = [
+{ code: "WCA",   en: "War Child Alliance",                     ar: "وور تشايلد أليانس",         region: "Both", lead: true },
+{ code: "IDA",   en: "Independent Doctors Association",        ar: "رابطة الأطباء المستقلين",    region: "NWS" },
+{ code: "IYD",   en: "Humanitarian Relief Association",        ar: "جمعية الإغاثة الإنسانية",    region: "NWS" },
+{ code: "GAN",   en: "Ghiras Al-Nahda",                        ar: "غراس النهضة",                region: "NWS" },
+{ code: "ASHTI", en: "Ashti Centre for Peace and Development", ar: "مركز آشتي للسلام والتنمية",  region: "NES" },
+{ code: "DRD",   en: "Dan for Relief and Development",         ar: "دان للإغاثة والتنمية",       region: "NES" }
+];
+const GOVS = [
+{ code: "idleb",   en: "Idleb",        ar: "إدلب",        region: "NWS",
+subs: [["harim","Harim","حارم"],["dana","Dana","الدانا"],["salqin","Salqin","سلقين"],["ariha","Ariha","أريحا"],["maaret","Maaret Tamsrin","معرة تمصرين"],["jisr","Jisr-Ash-Shugur","جسر الشغور"],["idlebc","Idleb City","مدينة إدلب"]] },
+{ code: "raqqa",   en: "Raqqa",        ar: "الرقة",       region: "NES",
+subs: [["raqqac","Ar-Raqqa City","مدينة الرقة"],["tellabiad","Tell Abiad","تل أبيض"],["ainissa","Ain Issa","عين عيسى"],["karama","Al-Karama","الكرامة"],["suluk","Suluk","سلوك"],["mansura","Al-Mansura","المنصورة"]] },
+{ code: "deirez",  en: "Deir-ez-Zor",  ar: "دير الزور",   region: "NES",
+subs: [["hajin","Hajin","هجين"],["basira","Al-Basira","البصيرة"],["muhasan","Muhasan","محسن"],["abukamal","Abu Kamal","البوكمال"],["sur","Sur","صور"],["kisra","Kisra","كسرة"]] },
+{ code: "hasakeh", en: "Al-Hasakeh",   ar: "الحسكة",      region: "NES",
+subs: [["shadadah","Shadadah","الشدادة"],["hasakehc","Al-Hasakeh City","مدينة الحسكة"],["rasalain","Ras Al Ain","رأس العين"],["qamishli","Qamishli","القامشلي"],["areesheh","Areesheh","العريشة"],["markada","Markada","مركدة"]] }
+];
+const SECTORS = ["protection", "education", "health", "nutrition", "mhpss", "wash", "shelter", "livelihoods"];
+const STAGES = ["submitted", "received", "accepted", "progress", "delivered", "closed"];
+const URGENCIES = ["normal", "urgent", "emergency"];
+const OUTCOMES = ["delivered", "unavailable", "no_attend", "declined", "onward"];
+const ROLES = ["sysadmin", "partner_admin", "case_manager", "field_coord", "readonly"];
+const AGE_GROUPS = ["0-4", "5-11", "12-17", "18-24", "25-59", "60+"];
+const SEXES = ["female", "male"];
+const TARGET_GROUPS = [
+{ code: "children",   en: "Children under 18",             ar: "الأطفال دون سن ١٨" },
+{ code: "women",      en: "Women and girls",               ar: "النساء والفتيات" },
+{ code: "uasc",       en: "Unaccompanied and separated children", ar: "الأطفال غير المصحوبين والمنفصلون" },
+{ code: "idp",        en: "Displaced households",          ar: "الأسر النازحة" },
+{ code: "pwd",        en: "Persons with disabilities",     ar: "الأشخاص ذوو الإعاقة" },
+{ code: "elderly",    en: "Older persons",                 ar: "كبار السن" },
+{ code: "all",        en: "All affected population",       ar: "جميع السكان المتأثرين" }
+];
+const REJECT_REASONS = [
+{ code: "capacity",   en: "Service at full capacity",                        ar: "الخدمة بكامل طاقتها" },
+{ code: "eligible",   en: "Case does not meet eligibility criteria",         ar: "الحالة لا تستوفي معايير الأهلية" },
+{ code: "coverage",   en: "Location outside operational coverage",           ar: "الموقع خارج نطاق التغطية التشغيلية" },
+{ code: "incomplete", en: "Insufficient information provided",               ar: "المعلومات المقدمة غير كافية" },
+{ code: "duplicate",  en: "Duplicate of an existing referral",               ar: "إحالة مكررة لحالة قائمة" },
+{ code: "suspended",  en: "Activity suspended at this location",             ar: "النشاط معلّق في هذا الموقع" }
+];
+const SUMMARIES = [
+{ en: "Household of five displaced from Deir-ez-Zor in January. Head of household reports two school-aged children out of education for 14 months. Requesting education enrolment support.",
+ar: "أسرة من خمسة أفراد نزحت من دير الزور في كانون الثاني. يفيد رب الأسرة بوجود طفلين في سن المدرسة خارج التعليم منذ ١٤ شهراً. المطلوب دعم التسجيل في التعليم." },
+{ en: "Female-headed household newly arrived in the sub-district. No civil documentation for three household members. Referred for legal assistance and documentation support.",
+ar: "أسرة ترأسها امرأة وصلت حديثاً إلى الناحية. لا توجد وثائق مدنية لثلاثة من أفراد الأسرة. أُحيلت للحصول على المساعدة القانونية ودعم التوثيق." },
+{ en: "Child identified during a community outreach session presenting signs of distress reported by the caregiver. Caregiver consented to a structured MHPSS assessment.",
+ar: "طفل جرى تحديده خلال جلسة توعية مجتمعية وتفيد مقدمة الرعاية بظهور علامات ضيق نفسي عليه. وافقت مقدمة الرعاية على تقييم منظم للصحة النفسية والدعم النفسي الاجتماعي." },
+{ en: "Household reports no functioning latrine at the current shelter and shared water access at distance. Referred for WASH assessment and hygiene kit provision.",
+ar: "تفيد الأسرة بعدم وجود مرحاض صالح في المأوى الحالي وبُعد نقطة المياه المشتركة. أُحيلت لتقييم المياه والإصحاح وتوفير حقيبة نظافة." },
+{ en: "Caregiver reports a child under two with reduced appetite over several weeks. No prior nutrition screening recorded. Referred for growth monitoring and screening.",
+ar: "تفيد مقدمة الرعاية بانخفاض شهية طفل دون سن الثانية خلال عدة أسابيع. لا يوجد فحص تغذوي سابق مسجل. أُحيل لمراقبة النمو والفحص." },
+{ en: "Adult household member with a chronic condition reports treatment interrupted since displacement. Referred to primary health care for reassessment and medication continuity.",
+ar: "أحد أفراد الأسرة البالغين يعاني حالة مزمنة ويفيد بانقطاع العلاج منذ النزوح. أُحيل إلى الرعاية الصحية الأولية لإعادة التقييم واستمرارية الدواء." },
+{ en: "Household shelter damaged during recent weather. Occupants remain in place. Referred for shelter assessment and emergency sealing-off kit.",
+ar: "تضرر مأوى الأسرة خلال الأحوال الجوية الأخيرة. لا يزال السكان في المكان. أُحيلت لتقييم المأوى وحقيبة إغلاق طارئة." },
+{ en: "Adolescent registered in a non-formal education programme requesting vocational pathway. Referred for skills training assessment and livelihoods counselling.",
+ar: "مراهق مسجل في برنامج تعليم غير نظامي ويطلب مساراً مهنياً. أُحيل لتقييم التدريب على المهارات وإرشاد سبل العيش." },
+{ en: "Health facility identified a protection concern during a routine consultation and obtained consent to refer. Case requires specialised case management follow-up.",
+ar: "حدد المرفق الصحي شاغلاً يتعلق بالحماية خلال استشارة روتينية وحصل على الموافقة للإحالة. تتطلب الحالة متابعة متخصصة لإدارة الحالة." },
+{ en: "Case previously supported through protection case management now requires structured psychosocial follow-up. Referred onward with the original consent extended.",
+ar: "حالة كانت مدعومة سابقاً عبر إدارة حالات الحماية وتحتاج الآن متابعة نفسية اجتماعية منظمة. أُحيلت إلى جهة أخرى مع تمديد الموافقة الأصلية." },
+{ en: "Household reports two members unable to reach the distribution point due to mobility limitations. Referred for assistive device assessment and inclusive access support.",
+ar: "تفيد الأسرة بعجز فردين عن الوصول إلى نقطة التوزيع بسبب محدودية الحركة. أُحيلت لتقييم الأجهزة المساعدة ودعم الوصول الدامج." },
+{ en: "Newly displaced household arrived at an informal site with no cooking facilities or bedding. Referred for shelter and non-food item support.",
+ar: "أسرة نازحة حديثاً وصلت إلى موقع عشوائي دون مرافق طهي أو فرش. أُحيلت لدعم المأوى والمواد غير الغذائية." }
+];
+const NOTE_TEXTS = [
+{ en: "Case received and logged. Initial eligibility check under way.", ar: "تم استلام الحالة وتسجيلها. جارٍ فحص الأهلية الأولي." },
+{ en: "Contacted the referring caseworker to confirm the sub-district and preferred contact time.", ar: "تم التواصل مع عامل الحالة المُحيل لتأكيد الناحية ووقت الاتصال المفضل." },
+{ en: "Appointment scheduled at the centre. Transport support arranged through the mobile team.", ar: "تم تحديد موعد في المركز. جرى ترتيب دعم النقل عبر الفريق المتنقل." },
+{ en: "First session completed. Follow-up planned within two weeks.", ar: "اكتملت الجلسة الأولى. الجلسة التالية مقررة خلال أسبوعين." },
+{ en: "Client did not attend the scheduled appointment. Two call attempts made, no response.", ar: "لم يحضر المستفيد الموعد المحدد. جرت محاولتا اتصال دون استجابة." },
+{ en: "Additional information requested from the referring partner regarding prior assistance received.", ar: "طُلبت معلومات إضافية من الجهة المُحيلة بشأن المساعدات السابقة." },
+{ en: "Service delivered. Outcome recorded and case prepared for closure.", ar: "تم تقديم الخدمة. سُجلت النتيجة وجُهزت الحالة للإغلاق." },
+{ en: "Connectivity at the field office was limited today; entry made retrospectively from field notes.", ar: "كان الاتصال في المكتب الميداني محدوداً اليوم؛ أُدخلت البيانات لاحقاً من الملاحظات الميدانية." }
+];
+const SERVICE_TYPES = {
+protection:  [["Child protection case management","إدارة حالات حماية الطفل"],["Legal assistance and civil documentation","المساعدة القانونية والتوثيق المدني"],["Women and girls safe space","مساحة آمنة للنساء والفتيات"],["Community-based protection outreach","التوعية المجتمعية للحماية"]],
+education:   [["Non-formal education catch-up classes","صفوف التعليم غير النظامي التعويضية"],["Education enrolment and school supplies","التسجيل المدرسي واللوازم التعليمية"],["Accelerated learning programme","برنامج التعلم المعجّل"]],
+health:      [["Primary health care centre","مركز رعاية صحية أولية"],["Mobile health team","فريق صحي متنقل"],["Reproductive health services","خدمات الصحة الإنجابية"],["Chronic disease treatment","علاج الأمراض المزمنة"]],
+nutrition:   [["Nutrition screening and growth monitoring","الفحص التغذوي ومراقبة النمو"],["Infant and young child feeding counselling","إرشاد تغذية الرضع وصغار الأطفال"]],
+mhpss:       [["Structured psychosocial support sessions","جلسات دعم نفسي اجتماعي منظمة"],["Individual counselling","إرشاد فردي"],["Caregiver support groups","مجموعات دعم مقدمي الرعاية"]],
+wash:        [["Hygiene kit distribution","توزيع حقائب النظافة"],["Latrine rehabilitation","إعادة تأهيل المراحيض"],["Water trucking and storage","نقل المياه والتخزين"]],
+shelter:     [["Emergency shelter kit","حقيبة مأوى طارئة"],["Shelter rehabilitation","إعادة تأهيل المأوى"],["Non-food item distribution","توزيع المواد غير الغذائية"]],
+livelihoods: [["Vocational skills training","التدريب على المهارات المهنية"],["Small business grant and coaching","منحة مشروع صغير وإرشاد"],["Cash for work","النقد مقابل العمل"]]
+};
+const REQUIRED_SERVICES = {
+protection:  [["cm","Case management","إدارة الحالة"],["legal","Legal assistance","المساعدة القانونية"],["doc","Civil documentation","التوثيق المدني"],["safe","Safe space access","الوصول إلى مساحة آمنة"]],
+education:   [["enrol","School enrolment","التسجيل المدرسي"],["supplies","School supplies","اللوازم المدرسية"],["nfe","Non-formal education","التعليم غير النظامي"],["transport","Transport support","دعم النقل"]],
+health:      [["consult","Medical consultation","استشارة طبية"],["meds","Medication supply","توفير الأدوية"],["referral","Secondary care referral","إحالة إلى رعاية ثانوية"],["rh","Reproductive health","الصحة الإنجابية"]],
+nutrition:   [["screen","Nutrition screening","فحص تغذوي"],["supp","Supplementary feeding","تغذية تكميلية"],["iycf","IYCF counselling","إرشاد تغذية الأطفال"]],
+mhpss:       [["assess","MHPSS assessment","تقييم الصحة النفسية"],["group","Group sessions","جلسات جماعية"],["indiv","Individual counselling","إرشاد فردي"]],
+wash:        [["kit","Hygiene kit","حقيبة نظافة"],["latrine","Latrine access","الوصول إلى مرحاض"],["water","Safe water access","الوصول إلى مياه آمنة"]],
+shelter:     [["kit","Shelter kit","حقيبة مأوى"],["nfi","Non-food items","مواد غير غذائية"],["repair","Shelter repair","إصلاح المأوى"]],
+livelihoods: [["skills","Skills training","تدريب مهاري"],["grant","Business grant","منحة مشروع"],["cfw","Cash for work","نقد مقابل عمل"]]
+};
+const FIRST = ["Layla","Omar","Rasha","Yusuf","Hanan","Karim","Nour","Bassel","Amina","Ghassan","Dalia","Firas","Salma","Tarek","Rana","Jamal","Hiba","Mazen","Lina","Adnan","Maha","Samer","Reem","Khaled","Zeina"];
+const LAST = ["Haddad","Nasser","Khalil","Suleiman","Barakat","Darwish","Mansour","Aziz","Rahman","Shami","Kurdi","Hakim","Sabbagh","Tarabishi","Jaber","Sayegh","Antar","Hourani","Bakri","Zahra","Marouf","Nabhan","Qassem","Wehbe","Ibrahim"];
+function buildSeed() {
+const rng = makeRng(20260415);
+const pick = (arr) => arr[Math.floor(rng() * arr.length)];
+const int = (a, b) => a + Math.floor(rng() * (b - a + 1));
+const NOW = new Date("2026-04-15T09:00:00Z").getTime();
+const HOUR = 3600e3, DAY = 24 * HOUR;
+const partners = ORGS.filter((o) => !o.lead);
+const govFor = (org) =>
+GOVS.filter((g) => (org.region === "Both" ? true : g.region === org.region) &&
+(org.code === "ASHTI" ? ["raqqa", "hasakeh"].includes(g.code) :
+org.code === "DRD" ? ["deirez", "hasakeh"].includes(g.code) : true));
+const users = [];
+let uid = 1;
+const addUser = (org, role, active) => {
+const fn = pick(FIRST), ln = pick(LAST);
+const u = {
+id: "U" + String(uid++).padStart(3, "0"),
+name: fn + " " + ln,
+email: (fn + "." + ln).toLowerCase() + "@" + org.code.toLowerCase() + ".org",
+org: org.code, role: role,
+status: active ? "active" : "inactive",
+lastActive: NOW - int(0, 20) * DAY - int(0, 23) * HOUR
+};
+users.push(u);
+return u;
+};
+addUser(ORGS[0], "sysadmin", true);
+addUser(ORGS[0], "sysadmin", true);
+addUser(ORGS[0], "readonly", true);
+ORGS.slice(1).forEach((o) => {
+addUser(o, "partner_admin", true);
+addUser(o, "case_manager", true);
+addUser(o, "case_manager", true);
+addUser(o, "field_coord", true);
+});
+addUser(ORGS[2], "readonly", true);
+addUser(ORGS[4], "readonly", true);
+addUser(ORGS[3], "case_manager", false);
+addUser(ORGS[5], "field_coord", false);
+const staffOf = (code, roles) => {
+const c = users.filter((u) => u.org === code && roles.includes(u.role));
+return c.length ? pick(c) : users[0];
+};
+const services = [];
+let sid = 1;
+partners.forEach((org) => {
+const govs = govFor(org);
+const n = org.code === "IDA" ? 8 : org.code === "ASHTI" ? 7 : org.code === "DRD" ? 7 : 6;
+for (let i = 0; i < n; i++) {
+const sector = SECTORS[(sid + i * 3) % SECTORS.length];
+const type = SERVICE_TYPES[sector][int(0, SERVICE_TYPES[sector].length - 1)];
+const gov = pick(govs);
+const sub = pick(gov.subs);
+const tg = pick(TARGET_GROUPS);
+const contact = staffOf(org.code, ["partner_admin", "case_manager"]);
+services.push({
+id: "SVC-" + String(sid++).padStart(3, "0"),
+nameEn: type[0], nameAr: type[1],
+org: org.code, sector: sector, gov: gov.code, sub: sub[0],
+target: tg.code,
+hours: pick([
+{ en: "Sunday to Thursday, 08:00 to 15:00", ar: "الأحد إلى الخميس، ٠٨:٠٠ إلى ١٥:٠٠" },
+{ en: "Saturday to Wednesday, 09:00 to 16:00", ar: "السبت إلى الأربعاء، ٠٩:٠٠ إلى ١٦:٠٠" },
+{ en: "Sunday to Thursday, 08:30 to 14:30. Mobile team Fridays.", ar: "الأحد إلى الخميس، ٠٨:٣٠ إلى ١٤:٣٠. فريق متنقل أيام الجمعة." },
+{ en: "Daily except Friday, 08:00 to 17:00", ar: "يومياً عدا الجمعة، ٠٨:٠٠ إلى ١٧:٠٠" }
+]),
+eligibility: pick([
+{ en: "Residents and displaced households registered in the sub-district. Referral or self-presentation accepted.", ar: "المقيمون والأسر النازحة المسجلون في الناحية. تُقبل الإحالة أو المراجعة المباشرة." },
+{ en: "Children under 18 and their caregivers. Consent of a caregiver required for children under 15.", ar: "الأطفال دون ١٨ ومقدمو الرعاية لهم. تلزم موافقة مقدم الرعاية لمن هم دون ١٥." },
+{ en: "Open to all affected population. Priority to households displaced within the last six months.", ar: "متاحة لجميع السكان المتأثرين. الأولوية للأسر النازحة خلال الأشهر الستة الأخيرة." },
+{ en: "Assessment-based. Cases are prioritised against the sector vulnerability criteria.", ar: "على أساس التقييم. تُرتب الحالات وفق معايير الهشاشة القطاعية." }
+]),
+desc: {
+en: "Delivered by " + org.en + " in " + sub[1] + ", " + gov.en + ". Capacity is reviewed monthly against the sector response plan. Cases arriving by referral are contacted within two working days.",
+ar: "تُقدَّم من " + org.ar + " في " + sub[2] + "، " + gov.ar + ". تُراجع الطاقة الاستيعابية شهرياً وفق خطة الاستجابة القطاعية. يتم التواصل مع الحالات الواردة عبر الإحالة خلال يومي عمل."
+},
+contact: contact.name, phone: "+963 9" + int(10, 99) + " " + int(100, 999) + " " + int(100, 999),
+email: contact.email,
+updated: NOW - int(2, 70) * DAY, updatedBy: contact.id,
+active: rng() > 0.08
+});
+}
+});
+const referrals = [];
+const targetStatus = [];
+STAGES.forEach((s) => { for (let i = 0; i < 8; i++) targetStatus.push(s); });
+for (let i = 0; i < 5; i++) targetStatus.push("rejected");
+while (targetStatus.length < 60) targetStatus.push(pick(STAGES));
+const refCounters = {};
+let overdueMade = 0, emergencyMade = 0, urgentMade = 0;
+targetStatus.forEach((status, idx) => {
+const from = partners[idx % partners.length];
+const region = from.region;
+let candidates = partners.filter((p) => p.code !== from.code && (p.region === region || rng() > 0.75));
+if (!candidates.length) candidates = partners.filter((p) => p.code !== from.code);
+const to = pick(candidates);
+const sector = SECTORS[idx % SECTORS.length];
+let urgency;
+if (emergencyMade < 5) { urgency = "emergency"; emergencyMade++; }
+else if (urgentMade < 11) { urgency = "urgent"; urgentMade++; }
+else urgency = rng() > 0.78 ? (rng() > 0.5 ? "urgent" : "emergency") : "normal";
+const gov = pick(govFor(to));
+const sub = pick(gov.subs);
+const year = 2026;
+refCounters[from.code] = (refCounters[from.code] || 100) + int(3, 19);
+const ref = "REF-" + from.code + "-" + year + "-" + String(refCounters[from.code]).padStart(4, "0");
+const createdDaysAgo = int(1, 89);
+const created = NOW - createdDaysAgo * DAY - int(0, 8) * HOUR;
+const stageIndex = status === "rejected" ? 1 : STAGES.indexOf(status);
+const history = [];
+let cursor = created;
+const creator = staffOf(from.code, ["case_manager", "partner_admin"]);
+history.push({ stage: "submitted", at: cursor, by: creator.id });
+for (let s = 1; s <= stageIndex; s++) {
+const fast = urgency !== "normal";
+const gap = (fast ? int(2, 22) : int(5, 60)) * HOUR + int(0, 2) * DAY * (rng() > 0.7 ? 1 : 0);
+cursor = Math.min(cursor + gap, NOW - HOUR);
+history.push({ stage: STAGES[s], at: cursor, by: staffOf(to.code, ["case_manager", "partner_admin"]).id });
+}
+if (status === "rejected") {
+cursor = Math.min(cursor + int(4, 40) * HOUR, NOW - HOUR);
+history.push({ stage: "rejected", at: cursor, by: staffOf(to.code, ["case_manager", "partner_admin"]).id });
+}
+const live = ["submitted", "received", "accepted", "progress"].includes(status);
+if (live && overdueMade < 7 && idx % 5 === 0) {
+const back = (80 + int(6, 160)) * HOUR;
+history[history.length - 1].at = NOW - back;
+overdueMade++;
+}
+const summary = SUMMARIES[idx % SUMMARIES.length];
+const svcOpts = REQUIRED_SERVICES[sector];
+const need = [svcOpts[int(0, svcOpts.length - 1)][0]];
+if (rng() > 0.5) { const extra = svcOpts[int(0, svcOpts.length - 1)][0]; if (!need.includes(extra)) need.push(extra); }
+const notes = [];
+const noteCount = Math.min(4, Math.max(1, stageIndex + (status === "rejected" ? 1 : 0)));
+for (let n = 0; n < noteCount; n++) {
+const nt = NOTE_TEXTS[(idx + n) % NOTE_TEXTS.length];
+const byOrg = n % 2 === 0 ? to.code : from.code;
+notes.push({
+at: Math.min(created + (n + 1) * int(6, 40) * HOUR, NOW - HOUR),
+by: staffOf(byOrg, ["case_manager", "field_coord", "partner_admin"]).id,
+en: nt.en, ar: nt.ar
+});
+}
+const consentUser = creator;
+const rec = {
+id: "R" + String(idx + 1).padStart(3, "0"),
+ref: ref, from: from.code, to: to.code, sector: sector, urgency: urgency,
+status: status, created: created,
+gov: gov.code, sub: sub[0],
+summaryEn: summary.en, summaryAr: summary.ar,
+services: need,
+sex: pick(SEXES), age: pick(AGE_GROUPS),
+consentType: rng() > 0.45 ? "written" : "verbal",
+consentLimits: rng() > 0.6
+? { en: "Contact through a female caseworker only. Do not share the shelter address with third parties.", ar: "التواصل عبر عاملة حالة فقط. عدم مشاركة عنوان المأوى مع أطراف ثالثة." }
+: null,
+consentAt: created - int(1, 20) * HOUR,
+consentBy: consentUser.id,
+history: history, notes: notes,
+attachments: rng() > 0.55 ? [{
+name: pick(["consent-form-signed.pdf", "assessment-form.pdf", "case-summary.docx", "referral-annex.pdf"]),
+size: int(48, 940) + " KB",
+by: creator.id, at: created + int(1, 5) * HOUR
+}] : [],
+rejection: null, outcome: null, closureNotes: null
+};
+if (status === "rejected") {
+const r = REJECT_REASONS[idx % REJECT_REASONS.length];
+rec.rejection = { code: r.code, note: {
+en: "Reviewed on receipt. " + r.en + ". The referring partner is advised to consider an alternative provider in the directory.",
+ar: "تمت المراجعة عند الاستلام. " + r.ar + ". يُنصح الشريك المُحيل بالنظر في مقدم خدمة بديل في الدليل." } };
+}
+if (status === "closed") {
+rec.outcome = OUTCOMES[idx % OUTCOMES.length];
+rec.closureNotes = {
+en: "Case closed following the recorded outcome. The referring partner was notified and no further action is required.",
+ar: "أُغلقت الحالة بعد تسجيل النتيجة. تم إشعار الجهة المُحيلة ولا يلزم أي إجراء إضافي." };
+}
+referrals.push(rec);
+});
+referrals[2].sector = "protection"; referrals[2].services = ["cm"];
+referrals[2].crossTo = "health";
+referrals[9].sector = "health"; referrals[9].services = ["consult"];
+referrals[9].crossTo = "mhpss";
+const notifications = [];
+referrals.forEach((r, i) => {
+r.history.forEach((h, hi) => {
+if (hi > 2 && i % 2) return;
+const recipientOrg = h.stage === "submitted" ? r.to : r.from;
+const u = staffOf(recipientOrg, ["case_manager", "partner_admin"]);
+notifications.push({
+id: "N" + notifications.length,
+to: u.id, org: recipientOrg, event: h.stage, ref: r.ref, refId: r.id,
+at: h.at + int(1, 9) * 60000,
+status: rng() > 0.94 ? "failed" : (rng() > 0.97 ? "queued" : "delivered")
+});
+});
+});
+notifications.sort((a, b) => b.at - a.at);
+const audit = [];
+const ip = () => "10." + int(20, 60) + "." + int(1, 250) + "." + int(2, 250);
+referrals.forEach((r) => {
+audit.push({ at: r.consentAt, user: r.consentBy, org: r.from, action: "consent.record", entity: r.ref, entityId: r.id, ip: ip(), detail: { en: "Informed consent recorded, " + r.consentType, ar: "تم تسجيل الموافقة المستنيرة، " + (r.consentType === "written" ? "كتابية" : "شفهية") } });
+r.history.forEach((h) => {
+audit.push({ at: h.at, user: h.by, org: h.stage === "submitted" ? r.from : r.to,
+action: h.stage === "submitted" ? "referral.create" : "referral.status", entity: r.ref, entityId: r.id, ip: ip(),
+detail: { en: "Status set to " + h.stage, ar: "تم ضبط الحالة إلى " + h.stage } });
+});
+r.notes.forEach((n) => {
+audit.push({ at: n.at, user: n.by, org: users.find((u) => u.id === n.by).org, action: "note.add", entity: r.ref, entityId: r.id, ip: ip(), detail: { en: "Case note added", ar: "تمت إضافة ملاحظة للحالة" } });
+});
+});
+services.forEach((s) => audit.push({ at: s.updated, user: s.updatedBy, org: s.org, action: "service.update", entity: s.id, entityId: s.id, ip: ip(), detail: { en: "Service listing updated", ar: "تم تحديث بيان الخدمة" } }));
+users.forEach((u) => audit.push({ at: u.lastActive, user: u.id, org: u.org, action: "auth.login", entity: u.email, entityId: u.id, ip: ip(), detail: { en: "Successful sign-in with MFA", ar: "تسجيل دخول ناجح بالمصادقة الثنائية" } }));
+audit.sort((a, b) => b.at - a.at);
+return { users, services, referrals, notifications, audit, now: NOW };
+}
+const STORAGE_KEY = "drs-prototype-v1";
+const DEFAULT_SETTINGS = {
+overdueHours: 72,
+triggers: { submitted: true, received: true, accepted: true, progress: false, delivered: true, closed: true, rejected: true },
+sender: "no-reply@referrals.sy-jo.org",
+retention: { case: 24, consent: 24, audit: 60, user: 12 },
+anonymise: true,
+nextAnonymise: "2026-05-01",
+sessionTimeout: 30,
+mfa: { sysadmin: true, partner_admin: true, case_manager: true, field_coord: false, readonly: false },
+defaultLang: "en",
+dateFormat: "DD MMM YYYY"
+};
+let state = {
+lang: "en",
+authed: false,
+loginStep: 1,
+role: "case_manager",
+org: "IDA",
+route: "#/login",
+bannerDismissed: false,
+sidebarCollapsed: false,
+settings: JSON.parse(JSON.stringify(DEFAULT_SETTINGS)),
+data: null,
+draft: null,
+ui: {
+tab: "incoming",
+filters: { q: "", sector: "", status: "", urgency: "", partner: "", from: "", to: "" },
+sort: { key: "created", dir: "desc" },
+page: 1,
+svcFilters: { q: "", sector: "", gov: "", sub: "", partner: "", target: "" },
+reports: { type: "volume", from: "", to: "", partner: "", sector: "", gov: "", status: "" },
+userFilter: { org: "", role: "" },
+auditFilter: { user: "", org: "", action: "", ref: "", from: "", to: "" },
+auditExpanded: false,
+modal: null,
+toasts: [],
+focusKey: null
+}
+};
+function persist() {
+try {
+localStorage.setItem(STORAGE_KEY, JSON.stringify({
+lang: state.lang, authed: state.authed, role: state.role, org: state.org,
+bannerDismissed: state.bannerDismissed, settings: state.settings,
+sidebarCollapsed: state.sidebarCollapsed,
+data: state.data, draft: state.draft
+}));
+} catch (e) {  }
+}
+function restore() {
+let saved = null;
+try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null"); } catch (e) { saved = null; }
+if (saved && saved.data) {
+state.lang = saved.lang || "en";
+state.authed = !!saved.authed;
+state.role = saved.role || "case_manager";
+state.org = saved.org || "IDA";
+state.bannerDismissed = !!saved.bannerDismissed;
+state.sidebarCollapsed = !!saved.sidebarCollapsed;
+state.settings = Object.assign({}, DEFAULT_SETTINGS, saved.settings || {});
+state.data = saved.data;
+state.draft = saved.draft || null;
+} else {
+state.data = buildSeed();
+}
+}
+function resetDemo() {
+state.data = buildSeed();
+state.draft = null;
+state.settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+state.ui.page = 1;
+commit();
+toast(t("set_reset_demo"), t("reset_done"));
+}
+function commit() { persist(); render(); }
+function esc(s) {
+return String(s === undefined || s === null ? "" : s)
+.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+.replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+function attr(s) { return esc(s); }
+const MONTHS_EN = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MONTHS_AR = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+function fmtDate(ts) {
+const d = new Date(ts);
+const m = state.lang === "ar" ? MONTHS_AR[d.getUTCMonth()] : MONTHS_EN[d.getUTCMonth()];
+return String(d.getUTCDate()).padStart(2, "0") + " " + m + " " + d.getUTCFullYear();
+}
+function fmtTime(ts) {
+const d = new Date(ts);
+return String(d.getUTCHours()).padStart(2, "0") + ":" + String(d.getUTCMinutes()).padStart(2, "0");
+}
+function fmtDateTime(ts) { return fmtDate(ts) + " " + fmtTime(ts); }
+function isoDate(ts) { return new Date(ts).toISOString().slice(0, 10); }
+function L(obj) { return obj ? (state.lang === "ar" ? obj.ar : obj.en) : ""; }
+function orgOf(code) { return ORGS.find((o) => o.code === code) || ORGS[0]; }
+function orgName(code) { const o = orgOf(code); return state.lang === "ar" ? o.ar : o.en; }
+function govOf(code) { return GOVS.find((g) => g.code === code); }
+function govName(code) { const g = govOf(code); return g ? (state.lang === "ar" ? g.ar : g.en) : ""; }
+function subName(code) {
+for (const g of GOVS) { const s = g.subs.find((x) => x[0] === code); if (s) return state.lang === "ar" ? s[2] : s[1]; }
+return "";
+}
+function userById(id) { return state.data.users.find((u) => u.id === id); }
+function userName(id) { const u = userById(id); return u ? u.name : "—"; }
+function userLine(id) { const u = userById(id); return u ? u.name + " · " + u.org : "—"; }
+function targetName(code) { const g = TARGET_GROUPS.find((x) => x.code === code); return g ? (state.lang === "ar" ? g.ar : g.en) : ""; }
+function svcName(s) { return state.lang === "ar" ? s.nameAr : s.nameEn; }
+function reqSvcLabel(sector, code) {
+const row = (REQUIRED_SERVICES[sector] || []).find((r) => r[0] === code);
+return row ? (state.lang === "ar" ? row[2] : row[1]) : code;
+}
+function rejectReasonLabel(code) {
+const r = REJECT_REASONS.find((x) => x.code === code);
+return r ? (state.lang === "ar" ? r.ar : r.en) : code;
+}
+function summaryOf(r) { return state.lang === "ar" ? r.summaryAr : r.summaryEn; }
+const NOW = () => state.data.now;
+function stageEnteredAt(r) { return r.history[r.history.length - 1].at; }
+function hoursAtStage(r) { return Math.floor((NOW() - stageEnteredAt(r)) / 3600e3); }
+function daysAtStage(r) { return Math.floor(hoursAtStage(r) / 24); }
+function isLive(r) { return ["submitted", "received", "accepted", "progress"].includes(r.status); }
+function isOverdue(r) { return isLive(r) && hoursAtStage(r) > state.settings.overdueHours; }
+function hoursOverdue(r) { return Math.max(0, hoursAtStage(r) - state.settings.overdueHours); }
+function processingDays(r) {
+const end = r.history[r.history.length - 1].at;
+return (end - r.created) / 86400e3;
+}
+function can(what, r) {
+const role = state.role, org = state.org;
+switch (what) {
+case "case_detail": return role !== "readonly";
+case "create_referral": return ["sysadmin", "partner_admin", "case_manager"].includes(role);
+case "note": return ["sysadmin", "partner_admin", "case_manager", "field_coord"].includes(role);
+case "act":
+if (!["sysadmin", "partner_admin", "case_manager"].includes(role)) return false;
+if (role === "sysadmin") return true;
+return r ? r.to === org : true;
+case "close":
+if (!["sysadmin", "partner_admin", "case_manager"].includes(role)) return false;
+if (role === "sysadmin") return true;
+return r ? (r.to === org || r.from === org) : true;
+case "manage_services": return ["sysadmin", "partner_admin"].includes(role);
+case "users": return ["sysadmin", "partner_admin"].includes(role);
+case "audit": return role === "sysadmin";
+case "settings": return role === "sysadmin";
+case "notifications": return role !== "readonly";
+case "all_orgs": return role === "sysadmin";
+default: return false;
+}
+}
+function scopedReferrals() {
+const all = state.data.referrals;
+if (can("all_orgs")) return all;
+return all.filter((r) => r.from === state.org || r.to === state.org);
+}
+function icon(name, size) {
+const s = size || 16;
+const P = {
+dashboard: '<path d="M3 3h6v7H3zM11 3h6v4h-6zM11 9h6v8h-6zM3 12h6v5H3z"/>',
+referrals: '<path d="M4 3h9l3 3v11H4z"/><path d="M7 8h6M7 11h6M7 14h4"/>',
+plus: '<path d="M10 4v12M4 10h12"/>',
+services: '<path d="M4 4h12v12H4z"/><path d="M4 8h12M8 8v8"/>',
+reports: '<path d="M4 16V7M9 16V4M14 16v-6"/><path d="M3 17h14"/>',
+users: '<circle cx="7" cy="7" r="3"/><path d="M3 17c0-2.5 2-4 4-4s4 1.5 4 4"/><path d="M13 5.5a2.5 2.5 0 010 5M14 17c0-2 -.6-3.3-1.6-4"/>',
+audit: '<path d="M5 3h10v14H5z"/><path d="M8 7h4M8 10h4M8 13h2"/>',
+settings: '<circle cx="10" cy="10" r="2.6"/><path d="M10 3v2M10 15v2M3 10h2M15 10h2M5.2 5.2l1.4 1.4M13.4 13.4l1.4 1.4M14.8 5.2l-1.4 1.4M6.6 13.4l-1.4 1.4"/>',
+help: '<circle cx="10" cy="10" r="7"/><path d="M8 8a2 2 0 113 1.7c-.6.4-1 .8-1 1.6"/><path d="M10 14.2v.1"/>',
+bell: '<path d="M6 8a4 4 0 018 0c0 3 1 4 1 4H5s1-1 1-4z"/><path d="M8.5 15a1.6 1.6 0 003 0"/>',
+lock: '<rect x="4.5" y="9" width="11" height="7.5" rx="1"/><path d="M7 9V6.8a3 3 0 016 0V9"/>',
+x: '<path d="M5 5l10 10M15 5L5 15"/>',
+check: '<path d="M4 10.5l4 4 8-9"/>',
+alert: '<path d="M10 3.5L18 16.5H2z"/><path d="M10 8v3.5M10 14v.1"/>',
+download: '<path d="M10 3v9M6.5 8.5L10 12l3.5-3.5"/><path d="M4 15.5h12"/>',
+search: '<circle cx="9" cy="9" r="5"/><path d="M12.8 12.8L17 17"/>',
+chevron: '<path d="M7.5 4l6 6-6 6"/>',
+back: '<path d="M12.5 4l-6 6 6 6"/>',
+logout: '<path d="M12 6V4H4v12h8v-2"/><path d="M8.5 10H17M14 7l3 3-3 3"/>',
+mail: '<rect x="3" y="5" width="14" height="10" rx="1"/><path d="M3.5 6l6.5 5 6.5-5"/>',
+panel: '<rect x="3" y="4" width="14" height="12" rx="1"/><path d="M8 4v12"/>',
+org: '<path d="M4 17V5l6-2v14"/><path d="M10 17V8l6 2v7"/><path d="M3 17h14"/>'
+};
+return '<svg class="icn" width="' + s + '" height="' + s + '" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + (P[name] || "") + "</svg>";
+}
+function tint(hex) {
+const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
+return "rgba(" + r + "," + g + "," + b + ",0.10)";
+}
+const STATUS_COLOR = {
+submitted: "#6b7280", received: "#1d6b64", accepted: "#2563a8", progress: "#8a6100",
+delivered: "#2f6b3a", closed: "#3d434b", rejected: "#9b2c2c"
+};
+const URGENCY_COLOR = { normal: "#6b7280", urgent: "#8a6100", emergency: "#9b2c2c" };
+function statusBadge(code) {
+const c = STATUS_COLOR[code] || "#6b7280";
+return '<span class="badge" style="color:' + c + ';background:' + tint(c) + '"><span class="dot"></span>' + esc(t("status_" + code)) + "</span>";
+}
+function urgencyBadge(code) {
+const c = URGENCY_COLOR[code] || "#6b7280";
+return '<span class="badge" style="color:' + c + ';background:' + tint(c) + '">' + esc(t("urgency_" + code)) + "</span>";
+}
+function overdueBadge() {
+const c = "#9b2c2c";
+return '<span class="badge" style="color:' + c + ';background:' + tint(c) + '">' + esc(t("overdue")) + "</span>";
+}
+function postMvp(title, desc) {
+return '<div class="postmvp"><div class="postmvp-head"><b>' + esc(title) + '</b><span class="tag">' + esc(t("post_mvp")) + "</span></div><p>" + esc(desc) + "</p></div>";
+}
+function lockedField() {
+return '<span class="locked">' + icon("lock", 14) + " " + esc(t("restricted")) + "</span>";
+}
+function emptyState(msg, withClear) {
+return '<div class="empty"><b>' + esc(t("no_results")) + "</b><p>" + esc(msg) + "</p>" +
+(withClear ? '<button class="btn btn-sm" data-act="' + withClear + '">' + esc(t("clear_filters")) + "</button>" : "") + "</div>";
+}
+function selectOpts(list, current) {
+return list.map((o) => '<option value="' + attr(o[0]) + '"' + (String(current) === String(o[0]) ? " selected" : "") + ">" + esc(o[1]) + "</option>").join("");
+}
+function sectorOpts() { return SECTORS.map((s) => [s, t("sector_" + s)]); }
+function statusOpts() { return STAGES.concat(["rejected"]).map((s) => [s, t("status_" + s)]); }
+function urgencyOpts() { return URGENCIES.map((s) => [s, t("urgency_" + s)]); }
+function partnerOpts() { return ORGS.map((o) => [o.code, orgName(o.code)]); }
+function govOpts() { return GOVS.map((g) => [g.code, govName(g.code)]); }
+function subOpts(govCode) {
+const gs = govCode ? GOVS.filter((g) => g.code === govCode) : GOVS;
+return gs.reduce((acc, g) => acc.concat(g.subs.map((s) => [s[0], state.lang === "ar" ? s[2] : s[1]])), []);
+}
+const T = (k) => esc(t(k));
+const A = (k) => attr(t(k));
+const P = (title, body, meta) =>
+`<div class="panel">${title ? `<div class="panel-head"><h2>${esc(title)}</h2>${meta || ""}</div>` : ""}${body}</div>`;
+const PB = (b) => `<div class="panel-body">${b}</div>`;
+const FLD = (id, label, inner, help, err) =>
+`<div class="field"><label for="${id}">${esc(label)}</label>${inner}` +
+`${help ? `<div class="help">${esc(help)}</div>` : ""}${err ? `<div class="err">${esc(err)}</div>` : ""}</div>`;
+const sel = (id, label, chg, opts, val, any, err) =>
+FLD(id, label, `<select id="${id}" data-chg="${chg}" class="${err ? "invalid" : ""}">` +
+`${any ? `<option value="">${any === true ? T("any") : esc(any)}</option>` : ""}${selectOpts(opts, val)}</select>`, null, err);
+const inp = (id, label, chg, val, type, ph, err) =>
+FLD(id, label, `<input id="${id}" type="${type || "text"}" data-fk="${id}" data-chg="${chg}" value="${attr(val)}"` +
+`${ph ? ` placeholder="${attr(ph)}"` : ""} class="${err ? "invalid" : ""}">`, null, err);
+const ta = (id, label, chg, val, ph, err) =>
+FLD(id, label, `<textarea id="${id}" data-fk="${id}" data-chg="${chg}"${ph ? ` placeholder="${attr(ph)}"` : ""}` +
+` class="${err ? "invalid" : ""}">${esc(val || "")}</textarea>`, null, err);
+const chk = (id, label, chg, on, extra) =>
+`<div class="check"><input type="checkbox" id="${id}" data-chg="${chg}"${extra || ""}${on ? " checked" : ""}>` +
+`<label for="${id}">${esc(label)}</label></div>`;
+const rad = (name, id, label, chg, val, on) =>
+`<div class="check"><input type="radio" name="${name}" id="${id}" value="${attr(val)}" data-chg="${chg}"${on ? " checked" : ""}>` +
+`<label for="${id}">${label}</label></div>`;
+const filters = (items, clearAct) =>
+`<div class="filters">${items.join("")}${clearAct ? `<div class="field"><button class="btn btn-sm" data-act="${clearAct}">${T("clear_filters")}</button></div>` : ""}</div>`;
+const count = (n, key, extra) => `<div class="result-count"><b>${n}</b> ${T(key)}${extra || ""}</div>`;
+const tbl = (cols, rows, cls) =>
+`<div class="table-wrap"><table class="data ${cls || ""}"><thead><tr>` +
+cols.map((c) => Array.isArray(c) ? `<th scope="col" class="${c[1]}">${esc(c[0])}</th>` : `<th scope="col">${esc(c)}</th>`).join("") +
+`</tr></thead><tbody>${rows}</tbody></table></div>`;
+const tr = (cells, at) => `<tr${at || ""}>` +
+cells.map((c) => Array.isArray(c) ? `<td class="${c[1]}">${c[0]}</td>` : `<td>${c}</td>`).join("") + "</tr>";
+const dl = (pairs, cols) => `<dl class="kv"${cols ? ` style="grid-template-columns:${cols}"` : ""}>` +
+pairs.filter(Boolean).map((p) => `<dt>${esc(p[0])}</dt><dd>${p[1]}</dd>`).join("") + "</dl>";
+const btn = (label, act, cls, data) => `<button class="btn ${cls || ""}" data-act="${act}"${data || ""}>${esc(label)}</button>`;
+const mvp = (titleEn, titleAr, descEn, descAr) =>
+postMvp(state.lang === "ar" ? titleAr : titleEn, state.lang === "ar" ? descAr : descEn);
+const AR = (en, ar) => state.lang === "ar" ? ar : en;
+let toastSeq = 0;
+function toast(title, body) {
+const id = ++toastSeq;
+state.ui.toasts.push({ id: id, title: title, body: body || "" });
+render();
+setTimeout(() => {
+state.ui.toasts = state.ui.toasts.filter((x) => x.id !== id);
+render();
+}, 4000);
+}
+function renderToasts() {
+return '<div class="toasts" role="status" aria-live="polite">' + state.ui.toasts.map((x) =>
+'<div class="toast"><div><b>' + esc(x.title) + "</b>" + (x.body ? esc(x.body) : "") +
+'</div><button data-act="toast.close" data-id="' + x.id + '" aria-label="' + attr(t("dismiss")) + '">&times;</button></div>'
+).join("") + "</div>";
+}
+function openModal(cfg) { state.ui.modal = cfg; render(); }
+function closeModal() {
+const trigger = state.ui.modal && state.ui.modal.triggerSel;
+state.ui.modal = null;
+render();
+if (trigger) { const el = document.querySelector(trigger); if (el) el.focus(); }
+}
+function renderModal() {
+const m = state.ui.modal;
+if (!m) return "";
+return '<div class="modal-backdrop" data-act="modal.backdrop"><div class="modal" role="dialog" aria-modal="true" aria-label="' + attr(m.title) + '">' +
+'<div class="modal-head"><h2>' + esc(m.title) + '</h2><button class="icon-btn" data-act="modal.close" aria-label="' + attr(t("close")) + '">' + icon("x", 14) + "</button></div>" +
+'<div class="modal-body">' + m.body + "</div>" +
+(m.foot === "" ? "" : '<div class="modal-foot">' + (m.foot || ('<button class="btn" data-act="modal.close">' + esc(t("close")) + "</button>")) + "</div>") +
+"</div></div>";
+}
+const ROUTES = [
+{ re: /^#\/login$/, view: "login", auth: false },
+{ re: /^#\/dashboard$/, view: "dashboard" },
+{ re: /^#\/referrals$/, view: "referrals" },
+{ re: /^#\/referrals\/new$/, view: "referralNew" },
+{ re: /^#\/referrals\/([\w-]+)$/, view: "referralDetail" },
+{ re: /^#\/services$/, view: "services" },
+{ re: /^#\/services\/manage$/, view: "servicesManage" },
+{ re: /^#\/services\/([\w-]+)$/, view: "serviceDetail" },
+{ re: /^#\/reports$/, view: "reports" },
+{ re: /^#\/users$/, view: "users" },
+{ re: /^#\/audit$/, view: "audit" },
+{ re: /^#\/settings$/, view: "settings" },
+{ re: /^#\/notifications$/, view: "notifications" },
+{ re: /^#\/help$/, view: "help" }
+];
+function currentRoute() {
+const h = location.hash || "#/dashboard";
+for (const r of ROUTES) {
+const m = h.match(r.re);
+if (m) return { view: r.view, param: m[1], auth: r.auth !== false };
+}
+return { view: "dashboard", auth: true };
+}
+function go(hash) { location.hash = hash; }
+window.addEventListener("hashchange", () => { window.scrollTo(0, 0); render(); });
+function pendingCount() {
+return scopedReferrals().filter((r) => r.to === state.org && ["submitted", "received"].includes(r.status)).length;
+}
+function navItems() {
+return [
+["nav_dashboard", "dashboard", "#/dashboard", "case", true],
+["nav_referrals", "referrals", "#/referrals", "case", true, pendingCount()],
+["nav_new_referral", "plus", "#/referrals/new", "case", can("create_referral")],
+["nav_services", "services", "#/services", "case", true],
+["nav_reports", "reports", "#/reports", "case", true],
+["nav_manage_services", "org", "#/services/manage", "admin", can("manage_services")],
+["nav_notifications", "bell", "#/notifications", "admin", can("notifications")],
+["nav_users", "users", "#/users", "admin", can("users")],
+["nav_audit", "audit", "#/audit", "admin", can("audit")],
+["nav_settings", "settings", "#/settings", "admin", can("settings")],
+["nav_help", "help", "#/help", "admin", true]
+].filter((i) => i[4]);
+}
+function renderSidebar() {
+const here = location.hash || "#/dashboard", items = navItems(), rail = state.sidebarCollapsed;
+const group = (g, label) => {
+const rows = items.filter((i) => i[3] === g);
+return rows.length ? `<div class="nav-group-label">${esc(label)}</div>` + rows.map((i) =>
+`<a href="${i[2]}"${here === i[2] ? ' class="active" aria-current="page"' : ""}` +
+`${rail ? ` title="${A(i[0])}"` : ""}>${icon(i[1])}<span>${T(i[0])}</span>` +
+`${i[5] ? `<span class="nav-count">${i[5]}</span>` : ""}</a>`).join("") : "";
+};
+return `<div class="sidebar"><div class="brand"><div class="brand-mark">SY</div>` +
+`<div><div class="brand-name">${T("app_name")}</div><div class="brand-sub">${T("app_sub")} · SY-JO 0041</div></div></div>` +
+`<nav class="nav" aria-label="${A("app_name")}">${group("case", t("group_case_work"))}${group("admin", t("group_administration"))}</nav>` +
+`<div class="sidebar-foot"><button data-act="scope.open"${rail ? ` title="${A("mvp_scope")}"` : ""}>` +
+`${rail ? icon("help", 14) : `<span>${T("mvp_scope")}</span>`}</button></div></div>`;
+}
+function langToggle() {
+return `<div class="lang-toggle" role="group" aria-label="Language">` +
+`<button data-act="lang.en" aria-pressed="${state.lang === "en"}" lang="en">EN</button>` +
+`<button data-act="lang.ar" aria-pressed="${state.lang === "ar"}" lang="ar">العربية</button></div>`;
+}
+function renderTopbar() {
+const recent = state.data.notifications.filter((n) => {
+const u = userById(n.to);
+return u && (can("all_orgs") || u.org === state.org) && n.at > NOW() - 3 * 86400e3;
+}).length;
+const orgList = state.role === "sysadmin" ? [ORGS[0]] : ORGS.filter((o) => !o.lead);
+const swi = (id, label, chg, opts, val, dis) =>
+`<div class="switcher"><label for="${id}">${esc(label)}</label>` +
+`<select id="${id}" data-chg="${chg}" style="width:auto"${dis ? " disabled" : ""}>${selectOpts(opts, val)}</select></div>`;
+return `<div class="topbar">` +
+`<button class="icon-btn" data-act="sidebar.toggle" aria-label="${A("toggle_sidebar")}"` +
+` aria-expanded="${!state.sidebarCollapsed}" aria-controls="main" title="${A("toggle_sidebar")}">${icon("panel")}</button>` +
+swi("sw-role", t("switch_role"), "switch.role", ROLES.map((r) => [r, t("role_" + r)]), state.role) +
+swi("sw-org", t("switch_org"), "switch.org", orgList.map((o) => [o.code, o.code + " · " + orgName(o.code)]), state.org, state.role === "sysadmin") +
+`<div class="spacer"></div>${langToggle()}` +
+`<a class="icon-btn" href="#/notifications" aria-label="${A("nav_notifications")}">${icon("bell")}` +
+`${recent ? `<span class="badge-count">${recent}</span>` : ""}</a>` +
+`<div class="user-chip">${icon("users", 18)}<div class="who"><b>${T("role_" + state.role)}</b>` +
+`<span class="meta">${esc(state.role === "sysadmin" ? "WCA" : state.org)}</span></div></div>` +
+`<button class="icon-btn" data-act="logout" aria-label="${A("logout")}">${icon("logout")}</button></div>`;
+}
+const FILE_KB = "175";
+function pageWeight() { return FILE_KB; }
+function renderFooter() {
+return `<div class="appfoot"><span>${T("footer_weight")}: ${pageWeight()} KB</span>` +
+`<span>${T("footer_no_requests")}</span><span>${T("footer_offline")}</span><span>SY-JO 0041</span></div>`;
+}
+function renderBanner() {
+return state.bannerDismissed ? ""
+: `<div class="demo-banner"><span>${T("banner")}</span><button data-act="banner.dismiss">${T("dismiss")}</button></div>`;
+}
+function breadcrumbs(parts) {
+return `<nav class="breadcrumbs" aria-label="Breadcrumb">${parts.map((p, i) =>
+(i ? '<span class="sep"></span>' : "") +
+(p[1] ? `<a href="${p[1]}">${esc(p[0])}</a>` : `<span>${esc(p[0])}</span>`)).join("")}</nav>`;
+}
+function pageHead(title, sub, actions) {
+return `<div class="page-head"><div><h1 class="page-title">${esc(title)}</h1>` +
+`${sub ? `<div class="page-sub">${esc(sub)}</div>` : ""}</div>` +
+`${actions ? `<div class="actions">${actions}</div>` : ""}</div>`;
+}
+function noAccess() {
+return P(null, PB(`<div class="empty"><b>${T("no_access_title")}</b><p>${T("no_access_body")}</p></div>`));
+}
+const VIEWS = {};
+function render() {
+const html = document.documentElement;
+html.lang = state.lang;
+html.dir = state.lang === "ar" ? "rtl" : "ltr";
+const r = currentRoute();
+if (!state.authed && r.view !== "login") { location.hash = "#/login"; return; }
+if (state.authed && r.view === "login") { location.hash = "#/dashboard"; return; }
+const active = document.activeElement;
+const fk = active && active.getAttribute ? active.getAttribute("data-fk") : null;
+const selStart = active && active.selectionStart, selEnd = active && active.selectionEnd;
+const scrollY = window.scrollY;
+const body = r.view === "login" ? VIEWS.login()
+: renderBanner() + `<div class="app${state.sidebarCollapsed ? " rail" : ""}">${renderSidebar()}<div class="main">${renderTopbar()}` +
+`<main class="content" id="main">${(VIEWS[r.view] || VIEWS.dashboard)(r.param)}</main>` +
+`${renderFooter()}</div></div>`;
+document.getElementById("app").innerHTML = body + renderModal() + renderToasts();
+if (fk) {
+const el = document.querySelector('[data-fk="' + fk + '"]');
+if (el) {
+el.focus();
+try { if (selStart !== null && el.setSelectionRange) el.setSelectionRange(selStart, selEnd); } catch (e) {  }
+}
+} else if (state.ui.modal) {
+const el = document.querySelector(".modal select, .modal textarea, .modal input, .modal button");
+if (el) el.focus();
+}
+window.scrollTo(0, r.view === "login" ? 0 : scrollY);
+}
+const ACTIONS = {};
+const CHANGES = {};
+document.addEventListener("click", (e) => {
+const el = e.target.closest("[data-act]");
+if (!el) return;
+const name = el.getAttribute("data-act");
+if (name === "modal.backdrop" && e.target !== el) return;
+if (ACTIONS[name]) { e.preventDefault(); ACTIONS[name](el, e); }
+});
+document.addEventListener("input", (e) => {
+const el = e.target.closest("[data-chg]");
+if (!el || el.tagName === "SELECT") return;
+if (CHANGES[el.getAttribute("data-chg")]) CHANGES[el.getAttribute("data-chg")](el);
+});
+document.addEventListener("change", (e) => {
+const el = e.target.closest("[data-chg]");
+if (!el) return;
+if (!["SELECT"].includes(el.tagName) && !["checkbox", "radio", "file", "date"].includes(el.type)) return;
+if (CHANGES[el.getAttribute("data-chg")]) CHANGES[el.getAttribute("data-chg")](el);
+});
+document.addEventListener("keydown", (e) => {
+if (!state.ui.modal) return;
+if (e.key === "Escape") { e.preventDefault(); closeModal(); return; }
+if (e.key !== "Tab") return;
+const m = document.querySelector(".modal");
+if (!m) return;
+const f = Array.from(m.querySelectorAll('button, [href], input, select, textarea')).filter((x) => !x.disabled && x.offsetParent !== null);
+if (!f.length) return;
+const first = f[0], last = f[f.length - 1];
+if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+});
+ACTIONS["banner.dismiss"] = () => { state.bannerDismissed = true; commit(); };
+ACTIONS["sidebar.toggle"] = () => { state.sidebarCollapsed = !state.sidebarCollapsed; commit(); };
+ACTIONS["lang.en"] = () => { state.lang = "en"; commit(); };
+ACTIONS["lang.ar"] = () => { state.lang = "ar"; commit(); };
+ACTIONS["modal.close"] = () => closeModal();
+ACTIONS["modal.backdrop"] = () => closeModal();
+ACTIONS["toast.close"] = (el) => {
+state.ui.toasts = state.ui.toasts.filter((x) => x.id !== Number(el.getAttribute("data-id")));
+render();
+};
+ACTIONS["logout"] = () => {
+state.authed = false; state.loginStep = 1; persist();
+location.hash = "#/login"; render();
+toast(t("logout"), t("logout_toast"));
+};
+CHANGES["switch.role"] = (el) => {
+state.role = el.value;
+if (state.role === "sysadmin") state.org = "WCA";
+else if (state.org === "WCA") state.org = "IDA";
+state.ui.page = 1;
+const v = currentRoute().view;
+const gate = { audit: "audit", settings: "settings", users: "users", servicesManage: "manage_services",
+referralNew: "create_referral", notifications: "notifications" }[v];
+if (gate && !can(gate)) location.hash = "#/dashboard";
+commit();
+};
+CHANGES["switch.org"] = (el) => { state.org = el.value; state.ui.page = 1; commit(); };
+const SCOPE_IN = [
+["Referral creation with consent-first workflow", "إنشاء الإحالة بمسار الموافقة أولاً"],
+["Six stage referral lifecycle with rejection path", "دورة إحالة من ست مراحل مع مسار الرفض"],
+["Service directory, searchable and standalone", "دليل خدمات قابل للبحث ومستقل"],
+["Five role tiers with organisation scoping", "خمسة مستويات أدوار مع تحديد نطاق المنظمة"],
+["Email notifications on configured transitions", "إشعارات بريدية عند الانتقالات المحددة"],
+["Standard reports with Excel and CSV export", "تقارير قياسية مع تصدير إكسل وCSV"],
+["Append-only audit trail", "سجل تدقيق قابل للإضافة فقط"],
+["English and Arabic interface with full RTL", "واجهة بالإنجليزية والعربية مع دعم كامل لليمين إلى اليسار"],
+["Configurable overdue threshold and retention periods", "حد تأخر وفترات احتفاظ قابلة للضبط"]
+];
+const SCOPE_OUT = [
+["Automatic routing by service matching", "التوجيه التلقائي بمطابقة الخدمات"],
+["Real-time service capacity indicators", "مؤشرات الطاقة الاستيعابية اللحظية"],
+["Parallel and re-referral workflows", "مسارات الإحالة المتوازية وإعادة الإحالة"],
+["SMS notifications and escalation chains", "إشعارات الرسائل القصيرة وسلاسل التصعيد"],
+["Customisable report builder and PDF export", "منشئ تقارير قابل للتخصيص وتصدير PDF"],
+["Disability disaggregation reporting", "التصنيف حسب الإعاقة في التقارير"],
+["Full offline data entry with background sync", "إدخال البيانات دون اتصال مع مزامنة خلفية"],
+["Kurdish (Kurmanji) language pack", "حزمة اللغة الكردية (الكرمانجية)"],
+["Single sign-on and automated user provisioning", "الدخول الموحد والتزويد الآلي للمستخدمين"],
+["KOBO API, CPIMS and Primero interoperability", "التشغيل البيني مع KOBO وCPIMS وبريميرو"],
+["Consortium-wide predictive analytics", "التحليلات التنبؤية على مستوى التحالف"]
+];
+ACTIONS["scope.open"] = () => {
+const col = (title, rows, dim) =>
+`<div><h3 style="font-size:13px;margin-bottom:6px">${esc(title)}</h3>` +
+`<ul style="margin:0;padding-inline-start:18px;font-size:13px">${rows.map((r) =>
+`<li style="margin-bottom:4px${dim ? ";color:var(--ink-500)" : ""}">${esc(AR(r[0], r[1]))}</li>`).join("")}</ul></div>`;
+openModal({
+title: t("mvp_scope_title"),
+body: `<p class="help" style="margin-bottom:12px">${T("mvp_note")}</p>` +
+`<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr))">` +
+col(t("in_mvp"), SCOPE_IN, false) + col(t("out_mvp"), SCOPE_OUT, true) + `</div>`
+});
+};
+VIEWS.login = function () {
+const two = state.loginStep === 2;
+const form = two
+? `<p class="help" style="margin-bottom:10px">${T("login_mfa_hint")}</p>` +
+FLD("lg-otp", t("login_mfa_label"), `<input id="lg-otp" type="text" inputmode="numeric" maxlength="6" data-fk="lg-otp" class="mono" value="482913">`) +
+`<button class="btn btn-primary" data-act="login.verify" style="width:100%;justify-content:center">${T("login_verify")}</button>` +
+`<button class="btn-link" data-act="login.back" style="margin-block-start:10px">${T("login_back")}</button>`
+: FLD("lg-email", t("login_email"), `<input id="lg-email" type="email" data-fk="lg-email" autocomplete="username" value="caseworker@ida.org">`) +
+FLD("lg-pass", t("login_password"), `<input id="lg-pass" type="password" data-fk="lg-pass" autocomplete="current-password" value="demo-password">`) +
+`<button class="btn btn-primary" data-act="login.next" style="width:100%;justify-content:center">${T("login_continue")}</button>`;
+return `<div class="login-wrap">${renderBanner()}
+<div class="login-bar"><div class="brand-mark">SY</div>
+<div><div class="brand-name">${T("app_name")}</div><div class="brand-sub">${T("app_sub")} · SY-JO 0041</div></div>
+<div style="margin-inline-start:auto"></div>${langToggle()}</div>
+<div class="login-main"><div class="login-card">
+<div class="panel-head"><h2>${esc(two ? t("login_mfa_title") : t("login_title"))}</h2></div>
+${PB(form + `<p class="help" style="margin-block-start:12px">${T("login_demo_note")}</p>`)}
+</div></div>${renderFooter()}</div>`;
+};
+ACTIONS["login.next"] = () => { state.loginStep = 2; render(); };
+ACTIONS["login.back"] = () => { state.loginStep = 1; render(); };
+ACTIONS["login.verify"] = () => { state.authed = true; state.loginStep = 1; persist(); location.hash = "#/dashboard"; render(); };
+function completedThisMonth(rows) {
+const d = new Date(NOW());
+return rows.filter((r) => {
+if (r.status !== "closed" && r.status !== "delivered") return false;
+const e = new Date(stageEnteredAt(r));
+return e.getUTCMonth() === d.getUTCMonth() && e.getUTCFullYear() === d.getUTCFullYear();
+}).length;
+}
+function volumeChart(rows) {
+const days = 30, W = 600, H = 150, pad = 22, bw = (W - pad) / days, rtl = state.lang === "ar";
+const bars = [];
+for (let i = days - 1; i >= 0; i--) {
+const start = NOW() - i * 86400e3;
+bars.push({ n: rows.filter((r) => r.created >= start && r.created < start + 86400e3).length, d: start });
+}
+const max = Math.max(1, ...bars.map((b) => b.n));
+const x = (i) => pad + (rtl ? days - 1 - i : i) * bw;
+const body = bars.map((b, i) => {
+const h = Math.round((b.n / max) * (H - 34));
+return `<rect x="${(x(i) + 1).toFixed(1)}" y="${H - 20 - h}" width="${(bw - 2).toFixed(1)}" height="${h}" fill="#1d6b64" opacity="0.85"></rect>`;
+}).join("");
+const labels = [0, 9, 19, 29].map((i) =>
+`<text x="${(x(i) + bw / 2).toFixed(1)}" y="${H - 6}" font-size="9" fill="#6b7280" text-anchor="middle">${esc(fmtDate(bars[i].d).slice(0, 6))}</text>`).join("");
+const grid = [0, Math.ceil(max / 2), max].map((v) => {
+const y = H - 20 - Math.round((v / max) * (H - 34));
+return `<line x1="${pad}" x2="${W}" y1="${y}" y2="${y}" stroke="#e2e6ea"></line>` +
+`<text x="${rtl ? W : 0}" y="${y + 3}" font-size="9" fill="#6b7280" text-anchor="${rtl ? "end" : "start"}">${v}</text>`;
+}).join("");
+return `<svg viewBox="0 0 ${W} ${H}" width="100%" height="150" role="img" aria-label="${A("dash_volume")}">${grid}${body}${labels}</svg>`;
+}
+VIEWS.dashboard = function () {
+const rows = scopedReferrals();
+const overdue = rows.filter(isOverdue);
+const closed = rows.filter((r) => r.status === "closed");
+const avg = closed.length ? closed.reduce((a, r) => a + processingDays(r), 0) / closed.length : 0;
+const m = (v, k, alert) => `<div class="metric${alert ? " alert" : ""}"><div class="v">${v}</div><div class="k">${esc(k)}</div></div>`;
+const metrics = `<div class="metrics">${
+m(rows.filter((r) => ["submitted", "received"].includes(r.status)).length, t("dash_pending")) +
+m(rows.filter(isLive).length, t("dash_active")) +
+m(completedThisMonth(rows), t("dash_completed_month")) +
+m(overdue.length, t("dash_overdue"), overdue.length > 0) +
+m(avg.toFixed(1), t("dash_avg_time") + " (" + t("days") + ")")}</div>`;
+const overduePanel = overdue.length
+? tbl([t("case_reference"), t("sector"), t("receiving_partner"), t("status"), [t("hours_overdue"), "num"]],
+overdue.slice(0, 8).map((r) => tr(
+[[esc(r.ref), "mono"], esc(t("sector_" + r.sector)), esc(orgName(r.to)), statusBadge(r.status), [hoursOverdue(r), "num"]],
+` class="clickable row-overdue" data-act="goto" data-href="#/referrals/${r.id}"`)).join(""))
+: PB(`<p class="help" style="margin:0">${T("no_overdue")}</p>`);
+const rates = SECTORS.map((s) => {
+const inS = rows.filter((r) => r.sector === s);
+const done = inS.filter((r) => r.status === "closed" || r.status === "delivered").length;
+return { s: s, n: inS.length, pct: inS.length ? Math.round((done / inS.length) * 100) : 0 };
+}).filter((x) => x.n).sort((a, b) => b.pct - a.pct);
+const ratesPanel = PB(`<div class="barlist">${rates.map((x) =>
+`<div class="barrow"><span>${esc(t("sector_" + x.s))}</span><span class="bartrack"><span class="barfill" style="width:${x.pct}%"></span></span><span class="pct">${x.pct}%</span></div>`).join("")}</div>`);
+const activity = state.data.audit
+.filter((a) => (a.action === "referral.status" || a.action === "referral.create") && (can("all_orgs") || a.org === state.org))
+.slice(0, 10);
+const activityPanel = tbl([t("timestamp"), t("case_reference"), t("status"), t("user")],
+activity.map((a) => tr(
+[[fmtDateTime(a.at), "mono"], [esc(a.entity), "mono"], statusBadge(a.detail.en.replace("Status set to ", "")), esc(userLine(a.user))],
+` class="clickable" data-act="goto" data-href="#/referrals/${a.entityId}"`)).join(""));
+const breakdown = can("all_orgs")
+? `<div style="margin-block-start:16px">${P(t("dash_partner_breakdown"),
+tbl([t("organisation"), [t("tab_outgoing"), "num"], [t("tab_incoming"), "num"], [t("dash_active"), "num"], [t("dash_overdue"), "num"], [t("completed"), "num"]],
+ORGS.filter((o) => !o.lead).map((o) => {
+const out = rows.filter((r) => r.from === o.code), inc = rows.filter((r) => r.to === o.code);
+return tr([esc(o.code + " · " + orgName(o.code)), [out.length, "num"], [inc.length, "num"],
+[inc.filter(isLive).length, "num"], [inc.filter(isOverdue).length, "num"], [inc.filter((r) => r.status === "closed").length, "num"]]);
+}).join(""))) }</div>`
+: "";
+const two = (a, b) => `<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr));margin-block-start:16px">${a}${b}</div>`;
+return breadcrumbs([[t("nav_dashboard"), null]]) +
+pageHead(t("nav_dashboard"), (can("all_orgs") ? t("role_sysadmin") : orgName(state.org)) + " · " + t("app_sub")) +
+metrics +
+two(P(t("dash_overdue_panel"), overduePanel, `<span class="meta">${T("set_overdue_threshold")}: ${state.settings.overdueHours} ${T("hours")}</span>`),
+P(t("dash_volume"), PB(volumeChart(rows)))) +
+two(P(t("dash_completion"), ratesPanel), P(t("dash_activity"), activityPanel)) +
+breakdown +
+`<div style="margin-block-start:16px">${mvp(
+"Consortium-wide analytics and cross-partner flow visualisation", "تحليلات على مستوى التحالف وتصور تدفق الإحالات بين الشركاء",
+"A partner-to-partner flow map with predictive analytics on expected caseload by sector and location.",
+"خريطة تدفق بين الشركاء والقطاعات مع تحليلات تنبؤية لأحمال العمل المتوقعة.")}</div>`;
+};
+ACTIONS["goto"] = (el) => go(el.getAttribute("data-href"));
+function filteredReferrals() {
+const f = state.ui.filters;
+let tab = state.ui.tab;
+if (can("all_orgs") && (tab === "incoming" || tab === "outgoing")) tab = "all";
+let rows = scopedReferrals();
+if (tab === "incoming") rows = rows.filter((r) => r.to === state.org);
+else if (tab === "outgoing") rows = rows.filter((r) => r.from === state.org);
+else if (tab === "overdue") rows = rows.filter(isOverdue);
+if (f.q) {
+const q = f.q.toLowerCase();
+rows = rows.filter((r) => (r.ref + " " + summaryOf(r) + " " + orgName(r.from) + " " + orgName(r.to)).toLowerCase().includes(q));
+}
+if (f.sector) rows = rows.filter((r) => r.sector === f.sector);
+if (f.status) rows = rows.filter((r) => r.status === f.status);
+if (f.urgency) rows = rows.filter((r) => r.urgency === f.urgency);
+if (f.partner) rows = rows.filter((r) => r.from === f.partner || r.to === f.partner);
+if (f.from) rows = rows.filter((r) => r.created >= Date.parse(f.from));
+if (f.to) rows = rows.filter((r) => r.created <= Date.parse(f.to) + 86400e3);
+const s = state.ui.sort, dir = s.dir === "asc" ? 1 : -1;
+const val = (r) => ({ ref: r.ref, created: r.created, from: orgName(r.from), to: orgName(r.to),
+sector: t("sector_" + r.sector), urgency: URGENCIES.indexOf(r.urgency),
+status: STAGES.concat(["rejected"]).indexOf(r.status), days: hoursAtStage(r) })[s.key];
+return rows.slice().sort((a, b) => { const x = val(a), y = val(b); return x > y ? dir : x < y ? -dir : 0; });
+}
+function sortTh(key, label, cls) {
+const s = state.ui.sort;
+return `<th scope="col" class="sortable ${cls || ""}" data-act="sort" data-key="${key}" tabindex="0" aria-sort="${
+s.key === key ? (s.dir === "asc" ? "ascending" : "descending") : "none"}">${esc(label)}${
+s.key === key ? `<span class="sort-caret">${s.dir === "asc" ? "▲" : "▼"}</span>` : ""}</th>`;
+}
+VIEWS.referrals = function () {
+const f = state.ui.filters, rows = filteredReferrals(), perPage = 25;
+const pages = Math.max(1, Math.ceil(rows.length / perPage));
+if (state.ui.page > pages) state.ui.page = pages;
+const page = state.ui.page, slice = rows.slice((page - 1) * perPage, page * perPage);
+const tabKeys = can("all_orgs") ? ["all", "overdue"] : ["incoming", "outgoing", "all", "overdue"];
+if (!tabKeys.includes(state.ui.tab)) state.ui.tab = tabKeys[0];
+const tabs = `<div class="tabs" role="tablist">${tabKeys.map((k) =>
+`<button role="tab" aria-selected="${state.ui.tab === k}" data-act="tab" data-tab="${k}">${T("tab_" + k)}${
+k === "overdue" ? ` <span class="nav-count">${scopedReferrals().filter(isOverdue).length}</span>` : ""}</button>`).join("")}</div>`;
+const bar = filters([
+`<div style="grid-column:span 2">${inp("f-q", t("free_text_search"), "flt.q", f.q, "search", t("search_ph_referrals"))}</div>`,
+sel("f-sector", t("sector"), "flt.sector", sectorOpts(), f.sector, true),
+sel("f-status", t("status"), "flt.status", statusOpts(), f.status, true),
+sel("f-urg", t("urgency"), "flt.urgency", urgencyOpts(), f.urgency, true),
+sel("f-partner", t("partner"), "flt.partner", partnerOpts(), f.partner, true),
+inp("f-from", t("from_date"), "flt.from", f.from, "date"),
+inp("f-to", t("to_date"), "flt.to", f.to, "date")
+], "flt.clear");
+const head = sortTh("ref", t("case_reference")) + sortTh("created", t("created")) +
+sortTh("from", t("referring_partner")) + sortTh("to", t("receiving_partner")) +
+sortTh("sector", t("sector")) + sortTh("urgency", t("urgency")) + sortTh("status", t("status")) +
+sortTh("days", t("days_at_stage"), "num") + `<th scope="col">${T("actions")}</th>`;
+const body = slice.map((r) => tr([
+[esc(r.ref), "mono nowrap"], [fmtDate(r.created), "nowrap"], esc(orgName(r.from)), esc(orgName(r.to)),
+esc(t("sector_" + r.sector)), urgencyBadge(r.urgency),
+statusBadge(r.status) + (isOverdue(r) ? " " + overdueBadge() : ""), [daysAtStage(r), "num"],
+`<a href="#/referrals/${r.id}">${T("view")}</a>`
+], ` class="clickable${isOverdue(r) ? " row-overdue" : ""}" data-act="goto" data-href="#/referrals/${r.id}"`)).join("");
+const table = `<div class="table-wrap"><table class="data sticky-first"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+const pgBtn = (p, label, dis, cur) =>
+`<button data-act="page" data-p="${p}"${dis ? " disabled" : ""}${cur ? ' aria-current="page"' : ""}>${label}</button>`;
+const pager = pages > 1
+? `<div class="pager"><span class="info">${T("page")} ${page} ${T("of")} ${pages}</span>` +
+pgBtn(page - 1, `<span class="dir-icon">${icon("back", 12)}</span>`, page === 1) +
+Array.from({ length: pages }, (_, i) => pgBtn(i + 1, i + 1, false, i + 1 === page)).join("") +
+pgBtn(page + 1, `<span class="dir-icon">${icon("chevron", 12)}</span>`, page === pages) + "</div>"
+: "";
+return breadcrumbs([[t("nav_dashboard"), "#/dashboard"], [t("nav_referrals"), null]]) +
+pageHead(t("nav_referrals"), orgName(state.org),
+(can("create_referral") ? `<a class="btn btn-primary" href="#/referrals/new">${icon("plus", 14)}${T("nav_new_referral")}</a>` : "") +
+`<button class="btn" data-act="export.referrals">${icon("download", 14)}${T("export_excel")}</button>`) +
+P(null, tabs + bar + count(rows.length, "results_count") +
+(slice.length ? table + pager
+: emptyState(AR("No referral matches these filters. Try clearing them.", "لا توجد إحالة مطابقة. جرّب مسح عوامل التصفية."), "flt.clear"))) +
+`<div style="margin-block-start:16px">${mvp(
+"Automatic routing based on service matching", "التوجيه التلقائي بمطابقة الخدمات",
+"Suggests the receiving partner automatically from sector, location, eligibility and available capacity.",
+"اقتراح الجهة المستقبِلة تلقائياً حسب القطاع والموقع والأهلية والطاقة المتاحة.")}</div>`;
+};
+ACTIONS["tab"] = (el) => { state.ui.tab = el.getAttribute("data-tab"); state.ui.page = 1; render(); };
+ACTIONS["sort"] = (el) => {
+const k = el.getAttribute("data-key"), s = state.ui.sort;
+if (s.key === k) s.dir = s.dir === "asc" ? "desc" : "asc"; else { s.key = k; s.dir = "asc"; }
+render();
+};
+ACTIONS["page"] = (el) => { state.ui.page = Number(el.getAttribute("data-p")); render(); };
+ACTIONS["flt.clear"] = () => {
+state.ui.filters = { q: "", sector: "", status: "", urgency: "", partner: "", from: "", to: "" };
+state.ui.page = 1; render();
+};
+["q", "sector", "status", "urgency", "partner", "from", "to"].forEach((k) => {
+CHANGES["flt." + k] = (el) => { state.ui.filters[k] = el.value; state.ui.page = 1; render(); };
+});
+ACTIONS["export.referrals"] = () => {
+const f = state.ui.filters;
+const applied = [t("tab_" + state.ui.tab)]
+.concat(f.q ? [t("search") + ': "' + f.q + '"'] : [])
+.concat(f.sector ? [t("sector_" + f.sector)] : [])
+.concat(f.status ? [t("status_" + f.status)] : [])
+.concat(f.urgency ? [t("urgency_" + f.urgency)] : [])
+.concat(f.partner ? [orgName(f.partner)] : [])
+.concat(f.from ? [t("from_date") + " " + f.from] : [])
+.concat(f.to ? [t("to_date") + " " + f.to] : []);
+const cols = [t("case_reference"), t("created"), t("referring_partner"), t("receiving_partner"), t("sector"),
+t("urgency"), t("status"), t("days_at_stage"), t("consent_type"), t("sex"), t("age_group")];
+toast(t("export_toast_title"), `referrals-${isoDate(NOW())}.xlsx · ${filteredReferrals().length} ${t("rows")}. ` +
+`${t("filter")}: ${applied.join(", ")}. ${t("actions")}: ${cols.join(", ")}.`);
+};
+function findReferral(id) { return state.data.referrals.find((r) => r.id === id); }
+function activeUserId() {
+const u = state.data.users.find((x) => x.org === state.org && x.role === state.role) ||
+state.data.users.find((x) => x.org === state.org) || state.data.users[0];
+return u.id;
+}
+function logAudit(r, action, detail) {
+state.data.audit.unshift({ at: NOW(), user: activeUserId(), org: state.org, action: action,
+entity: r.ref, entityId: r.id, ip: "10.42.17.8", detail: detail });
+}
+function logNotification(r, event, toOrg) {
+const u = state.data.users.find((x) => x.org === toOrg && ["case_manager", "partner_admin"].includes(x.role));
+if (!u) return;
+state.data.notifications.unshift({ id: "N" + Date.now(), to: u.id, org: toOrg, event: event,
+ref: r.ref, refId: r.id, at: NOW(), status: "delivered" });
+}
+function advance(r, stage) {
+r.status = stage;
+r.history.push({ stage: stage, at: NOW(), by: activeUserId() });
+logAudit(r, "referral.status", { en: "Status set to " + stage, ar: "تم ضبط الحالة إلى " + t("status_" + stage) });
+if (state.settings.triggers[stage]) logNotification(r, stage, stage === "submitted" ? r.to : r.from);
+}
+function nextStage(r) {
+const i = STAGES.indexOf(r.status);
+return i >= 0 && i < STAGES.length - 1 ? STAGES[i + 1] : null;
+}
+function stageTimeline(r) {
+const idx = r.status === "rejected" ? 1 : STAGES.indexOf(r.status);
+return `<div class="timeline">${STAGES.map((s, i) => {
+const h = r.history.find((x) => x.stage === s);
+return `<div class="stage ${i < idx ? "done" : i === idx ? "current" : ""}"><div class="bar"></div>` +
+`<div class="n">${T("status_" + s)}</div><div class="t">${h ? fmtDateTime(h.at) : "—"}</div>` +
+`<div class="meta">${h ? esc(userLine(h.by)) : ""}</div></div>`;
+}).join("")}</div>` +
+(r.rejection ? `<div style="margin-block-start:8px">${statusBadge("rejected")} <span class="meta">${esc(rejectReasonLabel(r.rejection.code))}</span></div>` : "");
+}
+VIEWS.referralDetail = function (id) {
+const r = findReferral(id);
+if (!r) return noAccess();
+if (!(r.to === state.org || r.from === state.org || can("all_orgs"))) return noAccess();
+const restricted = !can("case_detail");
+const acts = [];
+if (!restricted) {
+if (["submitted", "received"].includes(r.status) && can("act", r)) {
+acts.push(`<button class="btn btn-primary" data-act="ref.accept" data-id="${r.id}">${icon("check", 14)}${T("action_accept")}</button>`);
+acts.push(btn(t("action_reject"), "ref.rejectOpen", "btn-danger", ` data-id="${r.id}"`));
+}
+if (isLive(r) && can("act", r)) {
+acts.push(btn(t("action_request_info"), "ref.infoOpen", "", ` data-id="${r.id}"`));
+const n = nextStage(r);
+if (n && n !== "closed" && !["submitted", "received"].includes(r.status))
+acts.push(btn(t("action_advance") + ": " + t("status_" + n), "ref.advance", "", ` data-id="${r.id}"`));
+}
+if (["delivered", "progress"].includes(r.status) && can("close", r))
+acts.push(btn(t("action_close"), "ref.closeOpen", "btn-primary", ` data-id="${r.id}"`));
+}
+if (!acts.length) acts.push(`<span class="meta">${esc(restricted ? t("restricted_help") : t("not_permitted"))}</span>`);
+const lock = (v) => restricted ? lockedField() : v;
+const fields = dl([
+[t("case_reference"), `<span class="mono">${esc(r.ref)}</span>`],
+[t("created"), fmtDateTime(r.created)],
+[t("sector"), T("sector_" + r.sector)],
+[t("urgency"), urgencyBadge(r.urgency)],
+[t("location"), esc(subName(r.sub) + ", " + govName(r.gov))],
+[t("case_summary"), lock(esc(summaryOf(r)))],
+[t("required_services"), lock(r.services.map((s) => esc(reqSvcLabel(r.sector, s))).join(", "))],
+[t("sex"), lock(T("sex_" + r.sex))],
+[t("age_group"), lock(esc(r.age))],
+r.crossTo && [t("sector"), `<span class="meta">${esc(AR("Cross-sectoral referral to ", "إحالة متقاطعة القطاعات إلى "))}${T("sector_" + r.crossTo)}</span>`],
+r.rejection && [t("rejection_reason"), esc(rejectReasonLabel(r.rejection.code)) + `<div class="meta">${esc(L(r.rejection.note))}</div>`],
+r.outcome && [t("outcome"), T("outcome_" + r.outcome) + (r.closureNotes ? `<div class="meta">${esc(L(r.closureNotes))}</div>` : "")]
+]);
+const notes = restricted
+? PB(lockedField() + `<p class="help">${T("restricted_help")}</p>`)
+: PB(r.notes.slice().sort((a, b) => a.at - b.at).map((n) =>
+`<div class="note"><div class="note-head"><b>${esc(userName(n.by))}</b><span class="meta">${esc(userById(n.by) ? userById(n.by).org : "")}</span>` +
+`<span class="meta mono">${fmtDateTime(n.at)}</span></div><div class="note-body">${esc(L(n))}</div></div>`).join("") +
+(can("note")
+? `<div style="margin-block-start:10px">${ta("note-in", t("add_note"), "note.text", state.ui.noteDraft || "", t("note_ph"))}` +
+`<button class="btn btn-primary" data-act="note.add" data-id="${r.id}">${T("add_note")}</button></div>`
+: ""));
+const attachments = restricted ? PB(lockedField())
+: (r.attachments.length
+? tbl([t("attachment"), t("details"), t("user"), t("date")],
+r.attachments.map((a) => tr([esc(a.name), [esc(a.size), "mono"], esc(userLine(a.by)), fmtDate(a.at)])).join(""))
+: PB(`<p class="help" style="margin:0">${T("none")}</p>`));
+const caseAudit = state.data.audit.filter((a) => a.entityId === r.id);
+const shown = state.ui.auditExpanded ? caseAudit : caseAudit.slice(0, 5);
+const auditPanel = `<table class="data"><tbody>${shown.map((a) =>
+`<tr><td class="mono nowrap" style="width:100px">${fmtDateTime(a.at)}</td><td>${esc(L(a.detail))}` +
+`<div class="meta">${esc(userLine(a.user))} · ${esc(a.ip)}</div></td></tr>`).join("")}</tbody></table>` +
+(caseAudit.length > 5
+? `<div style="padding:8px 12px"><button class="btn-link" data-act="audit.toggle">${
+esc(state.ui.auditExpanded ? t("show_less") : t("show_all") + " (" + caseAudit.length + ")")}</button></div>` : "");
+const over = isOverdue(r);
+const side =
+P(t("time_at_stage"), PB(`<div style="font-size:22px;font-weight:600">${hoursAtStage(r)} ${T("hours")}</div>` +
+`<div class="meta">${T("status")}: ${T("status_" + r.status)}</div>` +
+(over ? `<div style="margin-block-start:6px">${overdueBadge()} <span class="meta">${T("overdue_warning")} (${state.settings.overdueHours} ${T("hours")})</span></div>` : ""))) +
+P(t("referring_org"), PB(`<div><b>${esc(orgName(r.from))}</b></div><div class="meta">${esc(r.from)} · ${esc(orgOf(r.from).region)}</div>` +
+`<div class="meta">${esc(userLine(r.history[0].by))}</div>`)) +
+P(t("receiving_org"), PB(`<div><b>${esc(orgName(r.to))}</b></div><div class="meta">${esc(r.to)} · ${esc(orgOf(r.to).region)}</div>` +
+`<div class="meta">${esc(subName(r.sub) + ", " + govName(r.gov))}</div>`)) +
+P(t("consent_record"), PB(dl([
+[t("consent_type"), T("consent_" + r.consentType)],
+[t("date"), fmtDateTime(r.consentAt)],
+[t("recorded_by"), esc(userLine(r.consentBy))],
+[t("data_sharing_limits"), lock(r.consentLimits ? esc(L(r.consentLimits)) : T("none"))],
+[t("retention_period"), state.settings.retention.case + " " + t("months")]
+], "110px minmax(0,1fr)"))) +
+P(t("audit_for_case"), `<div class="panel-body" style="padding:0">${auditPanel}</div>`);
+return breadcrumbs([[t("nav_dashboard"), "#/dashboard"], [t("nav_referrals"), "#/referrals"], [r.ref, null]]) +
+`<div class="page-head"><div><h1 class="page-title mono">${esc(r.ref)}</h1>` +
+`<div style="display:flex;gap:8px;margin-block-start:6px;flex-wrap:wrap">${urgencyBadge(r.urgency)}${statusBadge(r.status)}${over ? overdueBadge() : ""}</div></div>` +
+`<div class="actions">${acts.join("")}</div></div>` +
+`<div class="detail"><div>` +
+P(t("stage_timeline"), PB(stageTimeline(r))) +
+P(t("case_summary"), PB(fields)) +
+P(t("case_notes"), notes, `<span class="meta">${r.notes.length}</span>`) +
+P(t("attachments"), attachments) +
+`<div style="margin-block-start:16px">${mvp(
+"Parallel referrals and re-referral workflow", "الإحالات المتوازية وإعادة الإحالة",
+"Refer one case to several providers at once, and re-refer automatically when a receiving partner rejects.",
+"إحالة الحالة نفسها إلى عدة مقدمي خدمة في آن واحد، وإعادة الإحالة تلقائياً عند الرفض.")}</div>` +
+`</div><div>${side}</div></div>`;
+};
+ACTIONS["audit.toggle"] = () => { state.ui.auditExpanded = !state.ui.auditExpanded; render(); };
+CHANGES["note.text"] = (el) => { state.ui.noteDraft = el.value; };
+ACTIONS["note.add"] = (el) => {
+const r = findReferral(el.getAttribute("data-id"));
+const text = (state.ui.noteDraft || "").trim();
+if (!text) { toast(t("add_note"), t("err_required")); return; }
+r.notes.push({ at: NOW(), by: activeUserId(), en: text, ar: text });
+logAudit(r, "note.add", { en: "Case note added", ar: "تمت إضافة ملاحظة للحالة" });
+state.ui.noteDraft = "";
+commit();
+toast(t("add_note"), t("note_added"));
+};
+ACTIONS["ref.accept"] = (el) => {
+const r = findReferral(el.getAttribute("data-id"));
+if (r.status === "submitted") advance(r, "received");
+advance(r, "accepted");
+commit();
+toast(t("action_accept"), `${r.ref} · ${t("status_accepted")}. ${t("notification_sent")}: ${orgName(r.from)}.`);
+};
+ACTIONS["ref.advance"] = (el) => {
+const r = findReferral(el.getAttribute("data-id")), n = nextStage(r);
+if (!n) return;
+advance(r, n);
+commit();
+toast(t("action_advance"), `${r.ref} · ${t("status_" + n)}.`);
+};
+function rejectBody(id) {
+const d = state.ui.rejectDraft;
+return sel("rj-reason", t("reject_reason_label") + " *", "rj.reason",
+REJECT_REASONS.map((r) => [r.code, AR(r.en, r.ar)]), d.reason, t("err_select"), d.err) +
+ta("rj-note", t("reject_notes_label"), "rj.note", d.note);
+}
+ACTIONS["ref.rejectOpen"] = (el) => {
+const id = el.getAttribute("data-id");
+state.ui.rejectDraft = { reason: "", note: "", err: "" };
+openModal({ title: t("reject_title"), body: rejectBody(id),
+foot: btn(t("cancel"), "modal.close") + btn(t("action_reject"), "ref.rejectSubmit", "btn-danger", ` data-id="${id}"`) });
+};
+CHANGES["rj.reason"] = (el) => { state.ui.rejectDraft.reason = el.value; };
+CHANGES["rj.note"] = (el) => { state.ui.rejectDraft.note = el.value; };
+ACTIONS["ref.rejectSubmit"] = (el) => {
+const id = el.getAttribute("data-id"), d = state.ui.rejectDraft;
+if (!d.reason) { d.err = t("reject_err"); state.ui.modal.body = rejectBody(id); render(); return; }
+const r = findReferral(id);
+const note = d.note || rejectReasonLabel(d.reason);
+r.rejection = { code: d.reason, note: { en: note, ar: note } };
+advance(r, "rejected");
+if (d.note) r.notes.push({ at: NOW(), by: activeUserId(), en: d.note, ar: d.note });
+closeModal(); commit();
+toast(t("action_reject"), `${r.ref} · ${rejectReasonLabel(d.reason)}. ${orgName(r.from)} ${t("notification_sent")}.`);
+};
+ACTIONS["ref.infoOpen"] = (el) => {
+const id = el.getAttribute("data-id");
+state.ui.infoDraft = "";
+openModal({ title: t("request_info_title"),
+body: ta("ri-t", t("request_info_label"), "ri.text", "", t("note_ph")),
+foot: btn(t("cancel"), "modal.close") + btn(t("submit"), "ref.infoSubmit", "btn-primary", ` data-id="${id}"`) });
+};
+CHANGES["ri.text"] = (el) => { state.ui.infoDraft = el.value; };
+ACTIONS["ref.infoSubmit"] = (el) => {
+const r = findReferral(el.getAttribute("data-id"));
+const txt = (state.ui.infoDraft || "").trim() || t("action_request_info");
+r.notes.push({ at: NOW(), by: activeUserId(), en: txt, ar: txt });
+logAudit(r, "referral.info_request", { en: "More information requested", ar: "طُلبت معلومات إضافية" });
+logNotification(r, "info_request", r.from);
+closeModal(); commit();
+toast(t("action_request_info"), `${orgName(r.from)} · ${r.ref}`);
+};
+function closeBody(id) {
+const d = state.ui.closeDraft;
+return sel("cl-out", t("outcome") + " *", "cl.outcome", OUTCOMES.map((o) => [o, t("outcome_" + o)]), d.outcome, t("err_select"), d.err) +
+ta("cl-note", t("closure_notes"), "cl.note", d.note);
+}
+ACTIONS["ref.closeOpen"] = (el) => {
+const id = el.getAttribute("data-id");
+state.ui.closeDraft = { outcome: "", note: "", err: "" };
+openModal({ title: t("close_title"), body: closeBody(id),
+foot: btn(t("cancel"), "modal.close") + btn(t("action_close"), "ref.closeSubmit", "btn-primary", ` data-id="${id}"`) });
+};
+CHANGES["cl.outcome"] = (el) => { state.ui.closeDraft.outcome = el.value; };
+CHANGES["cl.note"] = (el) => { state.ui.closeDraft.note = el.value; };
+ACTIONS["ref.closeSubmit"] = (el) => {
+const id = el.getAttribute("data-id"), d = state.ui.closeDraft;
+if (!d.outcome) { d.err = t("close_err"); state.ui.modal.body = closeBody(id); render(); return; }
+const r = findReferral(id);
+if (r.status !== "delivered") advance(r, "delivered");
+r.outcome = d.outcome;
+const note = d.note || t("outcome_" + d.outcome);
+r.closureNotes = { en: note, ar: note };
+advance(r, "closed");
+closeModal(); commit();
+toast(t("action_close"), `${r.ref} · ${t("outcome_" + d.outcome)}.`);
+};
+function newDraft() {
+const seq = state.data.referrals.filter((r) => r.from === state.org).length + 148;
+return { step: 1, submittedId: null,
+consent: { ok: false, type: "verbal", limits: "" },
+ref: `REF-${state.org}-2026-${String(seq).padStart(4, "0")}`,
+sector: "", urgency: "normal", summary: "", services: [], sex: "", age: "",
+file: null, serviceId: "", svc: { q: "", sector: "", gov: "", target: "" }, errors: {} };
+}
+function draft() { if (!state.draft) state.draft = newDraft(); return state.draft; }
+VIEWS.referralNew = function () {
+if (!can("create_referral")) return noAccess();
+const d = draft();
+if (d.submittedId) {
+const r = findReferral(d.submittedId);
+return breadcrumbs([[t("nav_referrals"), "#/referrals"], [t("nav_new_referral"), null]]) +
+pageHead(t("submitted_title"), r.ref) +
+P(null, PB(`<p>${T("submitted_body")}</p>` +
+dl([[t("case_reference"), `<span class="mono">${esc(r.ref)}</span>`],
+[t("receiving_partner"), esc(orgName(r.to))], [t("status"), statusBadge(r.status)]]) +
+`<div style="margin-block-start:14px">${P(t("notification_sent"), PB(emailBody(r, "submitted")))}</div>` +
+`<div style="display:flex;gap:8px;margin-block-start:14px;flex-wrap:wrap">` +
+`<a class="btn btn-primary" href="#/referrals/${r.id}">${T("view_referral")}</a>` +
+btn(t("create_another"), "nr.another") + `</div>`));
+}
+const steps = `<div class="steps">${["step_consent", "step_case", "step_partner", "step_review"].map((n, i) =>
+`<div class="step ${d.step === i + 1 ? "active" : d.step > i + 1 ? "done" : ""}">` +
+`<div class="sn">${T("step")} ${i + 1} ${T("of")} 4</div><div class="st">${T(n)}</div></div>`).join("")}</div>`;
+const body = [stepConsent, stepCase, stepPartner, stepReview][d.step - 1](d);
+const nav = `<div style="display:flex;gap:8px;margin-block-start:16px;flex-wrap:wrap">` +
+(d.step > 1 ? `<button class="btn" data-act="nr.back"><span class="dir-icon">${icon("back", 14)}</span>${T("back")}</button>` : "") +
+(d.step < 4
+? `<button class="btn btn-primary" data-act="nr.next">${T("next")}<span class="dir-icon">${icon("chevron", 14)}</span></button>`
+: btn(t("submit_referral"), "nr.submit", "btn-primary")) +
+`<a class="btn" href="#/referrals">${T("cancel")}</a></div>`;
+return breadcrumbs([[t("nav_referrals"), "#/referrals"], [t("nav_new_referral"), null]]) +
+pageHead(t("nav_new_referral"), orgName(state.org)) + steps + body + nav;
+};
+function stepConsent(d) {
+return P(t("informed_consent"), PB(
+`<p class="help" style="max-width:70ch">${T("consent_intro")}</p>` +
+`<div style="margin-block-start:12px">${chk("c-ok", t("consent_confirmed") + " *", "nr.consentOk", d.consent.ok)}</div>` +
+(d.errors.consent ? `<div class="err">${esc(d.errors.consent)}</div>` : "") +
+`<fieldset style="margin-block-start:14px"><legend>${T("consent_type")} *</legend><div class="radio-row">` +
+["verbal", "written"].map((v) => rad("ctype", "ct-" + v, T("consent_" + v), "nr.consentType", v, d.consent.type === v)).join("") +
+`</div></fieldset>` +
+ta("c-lim", t("data_sharing_limits") + " (" + t("optional") + ")", "nr.consentLimits", d.consent.limits, t("consent_limits_ph")) +
+(!d.consent.ok ? `<p class="help">${T("consent_required_err")}</p>` : "")));
+}
+function stepCase(d) {
+const e = d.errors;
+const opts = d.sector ? REQUIRED_SERVICES[d.sector] : [];
+return P(t("step_case"), PB(
+`<div class="field"><span class="field-label">${T("auto_reference")}</span><div class="mono" style="font-size:14px">${esc(d.ref)}</div></div>` +
+`<div class="form-row">` +
+sel("n-sector", t("sector") + " *", "nr.sector", sectorOpts(), d.sector, t("err_select"), e.sector) +
+sel("n-sex", t("sex") + " *", "nr.sex", SEXES.map((s) => [s, t("sex_" + s)]), d.sex, t("err_select"), e.sex) +
+sel("n-age", t("age_group") + " *", "nr.age", AGE_GROUPS.map((a) => [a, a]), d.age, t("err_select"), e.age) +
+`</div>` +
+`<fieldset><legend>${T("urgency")} *</legend><div class="radio-row">` +
+URGENCIES.map((u) => rad("urg", "u-" + u, `<span style="color:${URGENCY_COLOR[u]};font-weight:600">${T("urgency_" + u)}</span>`,
+"nr.urgency", u, d.urgency === u)).join("") + `</div></fieldset>` +
+FLD("n-sum", t("case_summary") + " *",
+`<textarea id="n-sum" data-fk="n-sum" maxlength="500" data-chg="nr.summary" class="${e.summary ? "invalid" : ""}">${esc(d.summary)}</textarea>`,
+(500 - d.summary.length) + " " + t("chars_remaining"), e.summary) +
+`<fieldset><legend>${T("required_services")} *</legend>` +
+(d.sector
+? opts.map((s) => chk("rs-" + s[0], AR(s[1], s[2]), "nr.service", d.services.includes(s[0]), ` value="${s[0]}"`)).join("")
+: `<p class="help" style="margin:0">${T("err_select")}</p>`) +
+(e.services ? `<div class="err">${esc(e.services)}</div>` : "") + `</fieldset>` +
+FLD("n-file", t("attachment") + " (" + t("optional") + ")",
+`<input type="file" id="n-file" data-chg="nr.file">`,
+(d.file ? d.file.name + " · " + d.file.size : t("no_file")) + ". " + t("attach_note"))));
+}
+function matchServices(f) {
+return state.data.services.filter((s) => {
+if (!s.active) return false;
+if (f.sector && s.sector !== f.sector) return false;
+if (f.gov && s.gov !== f.gov) return false;
+if (f.target && s.target !== f.target) return false;
+if (f.q) {
+const q = f.q.toLowerCase();
+if (!(svcName(s) + " " + orgName(s.org) + " " + subName(s.sub)).toLowerCase().includes(q)) return false;
+}
+return true;
+});
+}
+function stepPartner(d) {
+const f = d.svc, rows = matchServices(f);
+const bar = filters([
+inp("p-q", t("search"), "nrs.q", f.q, "search"),
+sel("p-sec", t("sector"), "nrs.sector", sectorOpts(), f.sector, true),
+sel("p-gov", t("governorate"), "nrs.gov", govOpts(), f.gov, true),
+sel("p-tg", t("target_group"), "nrs.target", TARGET_GROUPS.map((x) => [x.code, AR(x.en, x.ar)]), f.target, true)
+]);
+const table = tbl([t("svc_name"), t("partner"), t("location"), t("operating_hours"), t("target_group"), t("actions")],
+rows.map((s) => tr([
+`<b>${esc(svcName(s))}</b><div class="meta">${esc(L(s.eligibility)).slice(0, 90)}…</div>`,
+esc(orgName(s.org)), esc(subName(s.sub) + ", " + govName(s.gov)), esc(L(s.hours)), esc(targetName(s.target)),
+`<button class="btn btn-sm ${d.serviceId === s.id ? "btn-primary" : ""}" data-act="nr.pick" data-id="${s.id}">${
+esc(d.serviceId === s.id ? t("selected") : t("select"))}</button>`
+], d.serviceId === s.id ? ' style="background:var(--accent-100)"' : "")).join(""));
+return P(t("step_partner"),
+PB(`<p class="help" style="max-width:70ch;margin:0">${T("select_service_intro")}</p>`) + bar +
+count(rows.length, "services_count", d.errors.partner ? ` <span class="err">${esc(d.errors.partner)}</span>` : "") +
+(rows.length ? table : emptyState(AR("No service matches. Widen the search.", "لا توجد خدمة مطابقة. وسّع نطاق البحث."), "nrs.clear")) +
+PB(postMvp(t("routing_note").split(".")[0], t("routing_note"))));
+}
+function stepReview(d) {
+const s = state.data.services.find((x) => x.id === d.serviceId);
+const row = (k, v, step) => [k, `${v} <span style="margin-inline-start:6px"><button class="btn-link" data-act="nr.goto" data-s="${step}">${T("edit")}</button></span>`];
+return P(t("step_review"), PB(`<p class="help">${T("review_intro")}</p>` + dl([
+row(t("informed_consent"), T(d.consent.ok ? "consent_confirmed" : "no"), 1),
+row(t("consent_type"), T("consent_" + d.consent.type), 1),
+row(t("data_sharing_limits"), esc(d.consent.limits || t("none")), 1),
+row(t("case_reference"), `<span class="mono">${esc(d.ref)}</span>`, 2),
+row(t("sector"), T("sector_" + d.sector), 2),
+row(t("urgency"), urgencyBadge(d.urgency), 2),
+row(t("case_summary"), esc(d.summary), 2),
+row(t("required_services"), d.services.map((x) => esc(reqSvcLabel(d.sector, x))).join(", "), 2),
+row(t("sex"), d.sex ? T("sex_" + d.sex) : "—", 2),
+row(t("age_group"), esc(d.age || "—"), 2),
+row(t("attachment"), esc(d.file ? d.file.name + " · " + d.file.size : t("none")), 2),
+row(t("receiving_partner"), s ? `${esc(orgName(s.org))} · ${esc(svcName(s))}<div class="meta">${esc(subName(s.sub) + ", " + govName(s.gov))}</div>` : "—", 3)
+])));
+}
+CHANGES["nr.consentOk"] = (el) => { draft().consent.ok = el.checked; draft().errors.consent = ""; render(); };
+CHANGES["nr.consentType"] = (el) => { draft().consent.type = el.value; };
+CHANGES["nr.consentLimits"] = (el) => { draft().consent.limits = el.value; };
+CHANGES["nr.sector"] = (el) => { const d = draft(); d.sector = el.value; d.services = []; d.errors.sector = ""; render(); };
+CHANGES["nr.sex"] = (el) => { draft().sex = el.value; };
+CHANGES["nr.age"] = (el) => { draft().age = el.value; };
+CHANGES["nr.urgency"] = (el) => { draft().urgency = el.value; };
+CHANGES["nr.summary"] = (el) => {
+const d = draft(); d.summary = el.value;
+const c = document.querySelector("#n-sum ~ .help");
+if (c) c.textContent = (500 - d.summary.length) + " " + t("chars_remaining");
+};
+CHANGES["nr.service"] = (el) => {
+const d = draft();
+if (el.checked) { if (!d.services.includes(el.value)) d.services.push(el.value); }
+else d.services = d.services.filter((x) => x !== el.value);
+d.errors.services = "";
+};
+CHANGES["nr.file"] = (el) => {
+const f = el.files && el.files[0];
+draft().file = f ? { name: f.name, size: Math.max(1, Math.round(f.size / 1024)) + " KB" } : null;
+render();
+};
+["q", "sector", "gov", "target"].forEach((k) => { CHANGES["nrs." + k] = (el) => { draft().svc[k] = el.value; render(); }; });
+ACTIONS["nrs.clear"] = () => { draft().svc = { q: "", sector: "", gov: "", target: "" }; render(); };
+ACTIONS["nr.pick"] = (el) => { const d = draft(); d.serviceId = el.getAttribute("data-id"); d.errors.partner = ""; render(); };
+ACTIONS["nr.goto"] = (el) => { draft().step = Number(el.getAttribute("data-s")); render(); };
+ACTIONS["nr.back"] = () => { const d = draft(); d.step = Math.max(1, d.step - 1); render(); };
+ACTIONS["nr.another"] = () => { state.draft = newDraft(); commit(); };
+ACTIONS["nr.next"] = () => {
+const d = draft();
+d.errors = {};
+if (d.step === 1 && !d.consent.ok) { d.errors.consent = t("consent_required_err"); render(); return; }
+if (d.step === 2) {
+if (!d.sector) d.errors.sector = t("err_select");
+if (!d.sex) d.errors.sex = t("err_select");
+if (!d.age) d.errors.age = t("err_select");
+if (d.summary.trim().length < 20) d.errors.summary = t("err_summary");
+if (!d.services.length) d.errors.services = t("err_services");
+if (Object.keys(d.errors).length) { render(); return; }
+if (!d.svc.sector) d.svc.sector = d.sector;
+}
+if (d.step === 3 && !d.serviceId) { d.errors.partner = t("err_partner"); render(); return; }
+d.step = Math.min(4, d.step + 1);
+commit();
+};
+ACTIONS["nr.submit"] = () => {
+const d = draft();
+const s = state.data.services.find((x) => x.id === d.serviceId);
+const uid = activeUserId();
+const r = {
+id: "R" + state.data.referrals.length + "-" + Date.now().toString().slice(-4),
+ref: d.ref, from: state.org, to: s.org, sector: d.sector, urgency: d.urgency,
+status: "submitted", created: NOW(), gov: s.gov, sub: s.sub,
+summaryEn: d.summary, summaryAr: d.summary, services: d.services.slice(), sex: d.sex, age: d.age,
+consentType: d.consent.type,
+consentLimits: d.consent.limits ? { en: d.consent.limits, ar: d.consent.limits } : null,
+consentAt: NOW() - 3600e3, consentBy: uid,
+history: [{ stage: "submitted", at: NOW(), by: uid }],
+notes: [], attachments: d.file ? [{ name: d.file.name, size: d.file.size, by: uid, at: NOW() }] : [],
+rejection: null, outcome: null, closureNotes: null, serviceId: s.id
+};
+state.data.referrals.push(r);
+logAudit(r, "consent.record", { en: "Informed consent recorded, " + d.consent.type, ar: "تم تسجيل الموافقة المستنيرة" });
+logAudit(r, "referral.create", { en: "Referral created", ar: "تم إنشاء الإحالة" });
+logNotification(r, "submitted", s.org);
+d.submittedId = r.id;
+commit();
+toast(t("submitted_title"), `${r.ref} · ${orgName(s.org)}`);
+};
+function emailBody(r, event) {
+const subject = `[${r.ref}] ${t("status_" + (STAGES.concat(["rejected"]).includes(event) ? event : "submitted"))}`;
+const lines = [
+[t("case_reference"), r.ref], [t("referring_partner"), orgName(r.from)], [t("receiving_partner"), orgName(r.to)],
+[t("sector"), t("sector_" + r.sector)], [t("urgency"), t("urgency_" + r.urgency)],
+[t("location"), subName(r.sub) + ", " + govName(r.gov)], [t("status"), t("status_" + r.status)]
+];
+return `<div style="border:1px solid var(--ink-200);border-radius:3px;padding:12px;background:var(--ink-050)">` +
+`<div class="meta">${T("notif_subject")}: <b>${esc(subject)}</b></div>` +
+`<div class="meta" style="margin-block-end:8px">${esc(state.settings.sender)}</div>` +
+`<p>${esc(AR("A referral has been recorded for your organisation in the referral management system. Please review and respond within " + state.settings.overdueHours + " hours.",
+"تم تسجيل إحالة لمنظمتكم في نظام إدارة الإحالات. يرجى مراجعتها والرد خلال " + state.settings.overdueHours + " ساعة."))}</p>` +
+dl(lines.map((l) => [l[0], esc(l[1])]), "150px minmax(0,1fr)") +
+`<p class="meta" style="margin-block-start:8px">${esc(AR(
+"Notification emails contain no personal data. Sign in to the system to view case detail.",
+"لا تحتوي رسائل الإشعار على بيانات شخصية. سجّل الدخول إلى النظام لعرض تفاصيل الحالة."))}</p></div>`;
+}
+function filteredServices() {
+const f = state.ui.svcFilters;
+return state.data.services.filter((s) => {
+if (f.sector && s.sector !== f.sector) return false;
+if (f.gov && s.gov !== f.gov) return false;
+if (f.sub && s.sub !== f.sub) return false;
+if (f.partner && s.org !== f.partner) return false;
+if (f.target && s.target !== f.target) return false;
+if (f.q && !(svcName(s) + " " + orgName(s.org) + " " + subName(s.sub) + " " + L(s.eligibility))
+.toLowerCase().includes(f.q.toLowerCase())) return false;
+return true;
+});
+}
+function activeBadge(on) {
+const c = on ? "#2f6b3a" : "#6b7280";
+return `<span class="badge" style="color:${c};background:${tint(c)}">${T(on ? "active" : "inactive")}</span>`;
+}
+VIEWS.services = function () {
+const f = state.ui.svcFilters, rows = filteredServices();
+const bar = filters([
+`<div style="grid-column:span 2">${inp("s-q", t("search"), "svc.q", f.q, "search")}</div>`,
+sel("s-sec", t("sector"), "svc.sector", sectorOpts(), f.sector, true),
+sel("s-gov", t("governorate"), "svc.gov", govOpts(), f.gov, true),
+sel("s-sub", t("subdistrict"), "svc.sub", subOpts(f.gov), f.sub, true),
+sel("s-org", t("partner"), "svc.partner", partnerOpts(), f.partner, true),
+sel("s-tg", t("target_group"), "svc.target", TARGET_GROUPS.map((x) => [x.code, AR(x.en, x.ar)]), f.target, true)
+], "svc.clear");
+const table = tbl([t("svc_name"), t("partner"), t("sector"), t("location"), t("target_group"), t("operating_hours"), t("status")],
+rows.map((s) => tr([
+`<b>${esc(svcName(s))}</b><div class="meta mono">${esc(s.id)}</div>`,
+esc(orgName(s.org)), T("sector_" + s.sector), esc(subName(s.sub) + ", " + govName(s.gov)),
+esc(targetName(s.target)), esc(L(s.hours)), activeBadge(s.active)
+], ` class="clickable" data-act="goto" data-href="#/services/${s.id}"`)).join(""), "sticky-first");
+return breadcrumbs([[t("nav_dashboard"), "#/dashboard"], [t("svc_title"), null]]) +
+pageHead(t("svc_title"), state.data.services.length + " " + t("rows"),
+can("manage_services") ? `<a class="btn" href="#/services/manage">${T("svc_manage")}</a>` : "") +
+P(null, bar + count(rows.length, "services_count") +
+(rows.length ? table : emptyState(AR("No service matches these filters. Try clearing them.", "لا توجد خدمة مطابقة. جرّب مسح عوامل التصفية."), "svc.clear"))) +
+`<div style="margin-block-start:16px">${postMvp(t("svc_capacity_pm"), t("svc_capacity_pm_d"))}</div>`;
+};
+["q", "sector", "gov", "sub", "partner", "target"].forEach((k) => {
+CHANGES["svc." + k] = (el) => {
+state.ui.svcFilters[k] = el.value;
+if (k === "gov") state.ui.svcFilters.sub = "";
+render();
+};
+});
+ACTIONS["svc.clear"] = () => { state.ui.svcFilters = { q: "", sector: "", gov: "", sub: "", partner: "", target: "" }; render(); };
+VIEWS.serviceDetail = function (id) {
+const s = state.data.services.find((x) => x.id === id);
+if (!s) return noAccess();
+return breadcrumbs([[t("svc_title"), "#/services"], [svcName(s), null]]) +
+pageHead(svcName(s), orgName(s.org) + " · " + subName(s.sub) + ", " + govName(s.gov),
+(can("create_referral") ? btn(t("svc_refer"), "svc.refer", "btn-primary", ` data-id="${s.id}"`) : "") +
+(can("manage_services") && (s.org === state.org || can("all_orgs")) ? `<a class="btn" href="#/services/manage">${T("edit")}</a>` : "")) +
+`<div class="detail"><div>` +
+P(t("description"), PB(`<p>${esc(L(s.desc))}</p>` + dl([
+[t("svc_name"), esc(svcName(s))], [t("organisation"), esc(orgName(s.org))],
+[t("sector"), T("sector_" + s.sector)], [t("governorate"), esc(govName(s.gov))],
+[t("subdistrict"), esc(subName(s.sub))], [t("target_group"), esc(targetName(s.target))],
+[t("eligibility"), esc(L(s.eligibility))], [t("operating_hours"), esc(L(s.hours))],
+[t("status"), activeBadge(s.active)]
+]))) +
+`<div style="margin-block-start:16px">${postMvp(t("svc_capacity_pm"), t("svc_capacity_pm_d"))}</div>` +
+`</div><div>` +
+P(t("contact_person"), PB(`<div><b>${esc(s.contact)}</b></div><div class="meta mono">${esc(s.phone)}</div><div class="meta">${esc(s.email)}</div>`)) +
+P(t("last_updated"), PB(`<div>${fmtDate(s.updated)}</div><div class="meta">${esc(userLine(s.updatedBy))}</div>`)) +
+`</div></div>`;
+};
+ACTIONS["svc.refer"] = (el) => {
+const s = state.data.services.find((x) => x.id === el.getAttribute("data-id"));
+state.draft = newDraft();
+state.draft.serviceId = s.id;
+state.draft.sector = s.sector;
+state.draft.svc.sector = s.sector;
+commit();
+go("#/referrals/new");
+toast(t("svc_refer"), `${orgName(s.org)} · ${svcName(s)}`);
+};
+function blankService() {
+return { id: null, nameEn: "", nameAr: "", sector: "protection", gov: GOVS[0].code, sub: GOVS[0].subs[0][0],
+target: "all", hours: "Sunday to Thursday, 08:00 to 15:00", contact: "", phone: "", email: "",
+eligibility: "", desc: "", err: "" };
+}
+VIEWS.servicesManage = function () {
+if (!can("manage_services")) return noAccess();
+const mine = state.data.services.filter((s) => can("all_orgs") || s.org === state.org);
+const f = state.ui.svcForm;
+const form = f ? P(f.id ? t("svc_edit") : t("svc_add"), PB(
+`<div class="form-row">` +
+inp("sf-name", t("svc_name") + " *", "svcf.nameEn", f.nameEn) +
+inp("sf-namear", t("svc_name") + " (العربية)", "svcf.nameAr", f.nameAr) +
+sel("sf-sec", t("sector"), "svcf.sector", sectorOpts(), f.sector) +
+sel("sf-gov", t("governorate"), "svcf.gov", govOpts(), f.gov) +
+sel("sf-sub", t("subdistrict"), "svcf.sub", subOpts(f.gov), f.sub) +
+sel("sf-tg", t("target_group"), "svcf.target", TARGET_GROUPS.map((x) => [x.code, AR(x.en, x.ar)]), f.target) +
+inp("sf-hours", t("operating_hours"), "svcf.hours", f.hours) +
+inp("sf-contact", t("contact_person"), "svcf.contact", f.contact) +
+inp("sf-phone", t("phone"), "svcf.phone", f.phone) +
+inp("sf-email", t("email"), "svcf.email", f.email, "email") +
+`</div>` +
+ta("sf-elig", t("eligibility"), "svcf.eligibility", f.eligibility) +
+ta("sf-desc", t("description"), "svcf.desc", f.desc) +
+(f.err ? `<div class="err">${esc(f.err)}</div>` : "") +
+`<div style="display:flex;gap:8px">${btn(t("save"), "svcm.save", "btn-primary")}${btn(t("cancel"), "svcm.cancel")}</div>`)) : "";
+return breadcrumbs([[t("svc_title"), "#/services"], [t("svc_manage"), null]]) +
+pageHead(t("svc_manage"), can("all_orgs") ? t("all") : orgName(state.org),
+`<button class="btn btn-primary" data-act="svcm.new">${icon("plus", 14)}${T("svc_add")}</button>`) +
+form +
+P(t("svc_title"), tbl([t("svc_name"), t("sector"), t("location"), t("status"), t("actions")],
+mine.map((s) => tr([
+`<b>${esc(svcName(s))}</b><div class="meta mono">${esc(s.id)}</div>`,
+T("sector_" + s.sector), esc(subName(s.sub) + ", " + govName(s.gov)), activeBadge(s.active),
+`<div style="display:flex;gap:6px;flex-wrap:wrap">${btn(t("edit"), "svcm.edit", "btn-sm", ` data-id="${s.id}"`)}${
+btn(s.active ? t("deactivate") : t("activate"), "svcm.toggle", "btn-sm", ` data-id="${s.id}"`)}</div>`
+])).join("")), `<span class="meta">${mine.length}</span>`);
+};
+ACTIONS["svcm.new"] = () => { state.ui.svcForm = blankService(); render(); };
+ACTIONS["svcm.cancel"] = () => { state.ui.svcForm = null; render(); };
+ACTIONS["svcm.edit"] = (el) => {
+const s = state.data.services.find((x) => x.id === el.getAttribute("data-id"));
+state.ui.svcForm = { id: s.id, nameEn: s.nameEn, nameAr: s.nameAr, sector: s.sector, gov: s.gov, sub: s.sub,
+target: s.target, hours: s.hours.en, contact: s.contact, phone: s.phone, email: s.email,
+eligibility: s.eligibility.en, desc: s.desc.en, err: "" };
+render();
+};
+ACTIONS["svcm.toggle"] = (el) => {
+const s = state.data.services.find((x) => x.id === el.getAttribute("data-id"));
+s.active = !s.active;
+commit();
+toast(svcName(s), t(s.active ? "active" : "inactive"));
+};
+Object.keys(blankService()).forEach((k) => {
+CHANGES["svcf." + k] = (el) => {
+state.ui.svcForm[k] = el.value;
+if (k === "gov") { state.ui.svcForm.sub = subOpts(el.value)[0][0]; render(); }
+else if (el.tagName === "SELECT") render();
+};
+});
+ACTIONS["svcm.save"] = () => {
+const f = state.ui.svcForm;
+if (!f.nameEn.trim()) { f.err = t("err_required"); render(); return; }
+const common = {
+nameEn: f.nameEn, nameAr: f.nameAr || f.nameEn, sector: f.sector, gov: f.gov, sub: f.sub, target: f.target,
+hours: { en: f.hours, ar: f.hours }, eligibility: { en: f.eligibility, ar: f.eligibility },
+desc: { en: f.desc, ar: f.desc }, contact: f.contact, phone: f.phone, email: f.email,
+updated: NOW(), updatedBy: activeUserId()
+};
+if (f.id) Object.assign(state.data.services.find((x) => x.id === f.id), common);
+else state.data.services.push(Object.assign({
+id: "SVC-" + String(state.data.services.length + 1).padStart(3, "0"),
+org: state.org === "WCA" ? "IDA" : state.org, active: true
+}, common));
+state.ui.svcForm = null;
+commit();
+toast(t("save"), t("svc_title"));
+};
+function reportRows() {
+const f = state.ui.reports;
+let rows = scopedReferrals();
+if (f.partner) rows = rows.filter((r) => r.from === f.partner || r.to === f.partner);
+if (f.sector) rows = rows.filter((r) => r.sector === f.sector);
+if (f.gov) rows = rows.filter((r) => r.gov === f.gov);
+if (f.status) rows = rows.filter((r) => r.status === f.status);
+if (f.from) rows = rows.filter((r) => r.created >= Date.parse(f.from));
+if (f.to) rows = rows.filter((r) => r.created <= Date.parse(f.to) + 86400e3);
+return rows;
+}
+function median(nums) {
+if (!nums.length) return 0;
+const s = nums.slice().sort((a, b) => a - b), m = Math.floor(s.length / 2);
+return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+}
+const N = (v) => [v, "num"];
+function reportTable(type, rows) {
+if (type === "volume") {
+return tbl([t("partner"), N(t("tab_outgoing")), N(t("tab_incoming")), N(t("dash_active"))],
+ORGS.filter((o) => !o.lead).map((o) => {
+const out = rows.filter((r) => r.from === o.code), inc = rows.filter((r) => r.to === o.code);
+return (out.length || inc.length)
+? tr([esc(orgName(o.code)), N(out.length), N(inc.length), N(inc.filter(isLive).length)]) : "";
+}).join(""));
+}
+if (type === "completion") {
+return tbl([t("sector"), N(t("rep_total")), N(t("completed")), N(t("status_rejected")), N(t("rep_completion_rate"))],
+SECTORS.map((s) => {
+const inS = rows.filter((r) => r.sector === s);
+if (!inS.length) return "";
+const done = inS.filter((r) => r.status === "closed" || r.status === "delivered").length;
+return tr([T("sector_" + s), N(inS.length), N(done), N(inS.filter((r) => r.status === "rejected").length),
+N(Math.round((done / inS.length) * 100) + "%")]);
+}).join(""));
+}
+if (type === "processing") {
+return tbl([t("sector"), N(t("rep_total")), N(t("rep_avg_days")), N(t("rep_median_days"))],
+SECTORS.map((s) => {
+const closed = rows.filter((r) => r.sector === s && r.status === "closed");
+if (!closed.length) return "";
+const days = closed.map(processingDays);
+return tr([T("sector_" + s), N(closed.length),
+N((days.reduce((a, b) => a + b, 0) / days.length).toFixed(1)), N(median(days).toFixed(1))]);
+}).join(""));
+}
+if (type === "extract") {
+const f = state.ui.reports;
+const svc = state.data.services.filter((s) =>
+(!f.partner || s.org === f.partner) && (!f.sector || s.sector === f.sector) && (!f.gov || s.gov === f.gov));
+return tbl([t("svc_name"), t("partner"), t("sector"), t("location"), t("status")],
+svc.map((s) => tr([esc(svcName(s)), esc(orgName(s.org)), T("sector_" + s.sector),
+esc(subName(s.sub) + ", " + govName(s.gov)), T(s.active ? "active" : "inactive")])).join(""));
+}
+return tbl([t("age_group")].concat(SEXES.map((s) => N(t("sex_" + s)))).concat([N(t("rep_total"))]),
+AGE_GROUPS.map((a) => {
+const cells = SEXES.map((s) => rows.filter((r) => r.age === a && r.sex === s).length);
+return tr([esc(a)].concat(cells.map(N)).concat([N("<b>" + cells.reduce((x, y) => x + y, 0) + "</b>")]));
+}).join("") +
+tr([`<b>${T("rep_total")}</b>`].concat(SEXES.map((s) => N("<b>" + rows.filter((r) => r.sex === s).length + "</b>")))
+.concat([N("<b>" + rows.length + "</b>")])));
+}
+VIEWS.reports = function () {
+const f = state.ui.reports, rows = reportRows();
+const closed = rows.filter((r) => r.status === "closed");
+const done = rows.filter((r) => r.status === "closed" || r.status === "delivered").length;
+const types = [["volume", t("rep_volume")], ["completion", t("rep_completion")], ["processing", t("rep_processing")],
+["extract", t("rep_extract")], ["sadd", t("rep_sadd")]];
+const m = (v, k) => `<div class="metric"><div class="v">${v}</div><div class="k">${esc(k)}</div></div>`;
+const bar = filters([
+sel("r-type", t("rep_type"), "rep.type", types, f.type),
+inp("r-from", t("from_date"), "rep.from", f.from, "date"),
+inp("r-to", t("to_date"), "rep.to", f.to, "date"),
+sel("r-partner", t("partner"), "rep.partner", partnerOpts(), f.partner, true),
+sel("r-sector", t("sector"), "rep.sector", sectorOpts(), f.sector, true),
+sel("r-gov", t("governorate"), "rep.gov", govOpts(), f.gov, true),
+sel("r-status", t("status"), "rep.status", statusOpts(), f.status, true)
+], "rep.clear");
+const summary = `<div class="metrics" style="border:0;border-block-end:var(--rule);border-radius:0">${
+m(rows.length, t("rep_total")) +
+m((rows.length ? Math.round((done / rows.length) * 100) : 0) + "%", t("rep_completion_rate")) +
+m(closed.length ? (closed.reduce((a, r) => a + processingDays(r), 0) / closed.length).toFixed(1) : "0.0", t("rep_avg_days")) +
+m(median(closed.map(processingDays)).toFixed(1), t("rep_median_days"))}</div>`;
+return breadcrumbs([[t("nav_dashboard"), "#/dashboard"], [t("nav_reports"), null]]) +
+pageHead(t("nav_reports"), can("all_orgs") ? t("all") : orgName(state.org),
+`<button class="btn" data-act="rep.export" data-fmt="xlsx">${icon("download", 14)}${T("export_excel")}</button>` +
+`<button class="btn" data-act="rep.export" data-fmt="csv">${icon("download", 14)}${T("export_csv")}</button>`) +
+P(null, bar + summary +
+`<div class="panel-head"><h2>${T("rep_preview")} · ${esc((types.find((x) => x[0] === f.type) || types[0])[1])}</h2></div>` +
+(rows.length ? reportTable(f.type, rows) : emptyState(AR("No data in this range.", "لا توجد بيانات ضمن هذا النطاق."), "rep.clear")) +
+PB(`<p class="help" style="margin:0">${T("rep_note")}</p>`)) +
+`<div style="margin-block-start:16px">${mvp(
+"Customisable report builder, PDF export, disability disaggregation",
+"منشئ تقارير قابل للتخصيص، تصدير PDF، التصنيف حسب الإعاقة",
+"Column selection, grouping and scheduled delivery, with Washington Group disability disaggregation.",
+"اختيار الأعمدة والتجميع والجدولة الدورية، مع تصنيف واشنطن جروب للإعاقة.")}</div>`;
+};
+["type", "from", "to", "partner", "sector", "gov", "status"].forEach((k) => {
+CHANGES["rep." + k] = (el) => { state.ui.reports[k] = el.value; render(); };
+});
+ACTIONS["rep.clear"] = () => {
+state.ui.reports = { type: state.ui.reports.type, from: "", to: "", partner: "", sector: "", gov: "", status: "" };
+render();
+};
+ACTIONS["rep.export"] = (el) => {
+const fmt = el.getAttribute("data-fmt"), f = state.ui.reports, rows = reportRows();
+const applied = [f.partner ? orgName(f.partner) : t("all")]
+.concat(f.sector ? [t("sector_" + f.sector)] : [])
+.concat(f.gov ? [govName(f.gov)] : [])
+.concat(f.status ? [t("status_" + f.status)] : [])
+.concat(f.from || f.to ? [(f.from || "…") + " → " + (f.to || "…")] : []);
+toast(t("export_toast_title"),
+`report-${f.type}-${isoDate(NOW())}.${fmt} · ${rows.length} ${t("rows")}. ${t("filter")}: ${applied.join(", ")}.`);
+};
+VIEWS.users = function () {
+if (!can("users")) return noAccess();
+const f = state.ui.userFilter, form = state.ui.userForm;
+let rows = state.data.users.filter((u) => can("all_orgs") || u.org === state.org);
+if (f.org) rows = rows.filter((u) => u.org === f.org);
+if (f.role) rows = rows.filter((u) => u.role === f.role);
+const roleOpts = ROLES.map((r) => [r, t("role_" + r)]);
+const addForm = form ? P(t("add_user"), PB(
+`<div class="form-row">` +
+inp("uf-name", t("name") + " *", "usrf.name", form.name) +
+inp("uf-email", t("email") + " *", "usrf.email", form.email, "email") +
+sel("uf-org", t("organisation"), "usrf.org", partnerOpts(), form.org) +
+sel("uf-role", t("role"), "usrf.role", roleOpts, form.role) +
+`</div>` +
+(form.err ? `<div class="err">${esc(form.err)}</div>` : "") +
+`<p class="help">${T("invite_note")}</p>` +
+`<div style="display:flex;gap:8px">${btn(t("save"), "usr.save", "btn-primary")}${btn(t("cancel"), "usr.cancel")}</div>`)) : "";
+const bar = filters([
+can("all_orgs") ? sel("u-org", t("organisation"), "usr.org", partnerOpts(), f.org, true) : "",
+sel("u-role", t("role"), "usr.role", roleOpts, f.role, true)
+]);
+const table = tbl([t("name"), t("email"), t("organisation"), t("role"), t("status"), t("last_active"), t("actions")],
+rows.map((u) => tr([
+esc(u.name), [esc(u.email), "meta"], esc(u.org),
+`<select data-chg="usr.setRole" data-id="${u.id}" style="width:auto;font-size:12px" aria-label="${A("edit_role")}">${selectOpts(roleOpts, u.role)}</select>`,
+T(u.status === "active" ? "active" : "inactive"), [fmtDate(u.lastActive), "nowrap"],
+`<div style="display:flex;gap:6px;flex-wrap:wrap">${btn(t("reset_password"), "usr.reset", "btn-sm", ` data-id="${u.id}"`)}${
+btn(u.status === "active" ? t("deactivate") : t("activate"), "usr.toggle", "btn-sm", ` data-id="${u.id}"`)}</div>`
+])).join(""), "sticky-first");
+return breadcrumbs([[t("nav_dashboard"), "#/dashboard"], [t("users_title"), null]]) +
+pageHead(t("users_title"), can("all_orgs") ? t("all") : orgName(state.org),
+`<button class="btn btn-primary" data-act="usr.new">${icon("plus", 14)}${T("add_user")}</button>`) +
+addForm +
+P(null, bar + `<div class="result-count"><b>${rows.length}</b> ${T("users_title")}</div>` + table) +
+`<div style="margin-block-start:16px">${mvp(
+"Single sign-on and automated user provisioning", "الدخول الموحد والتزويد الآلي للمستخدمين",
+"Directory integration so accounts are created and disabled automatically.",
+"ربط بدليل المنظمة لإنشاء الحسابات وإيقافها تلقائياً.")}</div>`;
+};
+CHANGES["usr.org"] = (el) => { state.ui.userFilter.org = el.value; render(); };
+CHANGES["usr.role"] = (el) => { state.ui.userFilter.role = el.value; render(); };
+CHANGES["usr.setRole"] = (el) => {
+const u = userById(el.getAttribute("data-id"));
+u.role = el.value;
+state.data.audit.unshift({ at: NOW(), user: activeUserId(), org: state.org, action: "user.role",
+entity: u.email, entityId: u.id, ip: "10.42.17.8",
+detail: { en: "Role changed to " + u.role, ar: "تم تغيير الدور إلى " + t("role_" + u.role) } });
+commit();
+toast(t("edit_role"), `${u.name} · ${t("role_" + u.role)}`);
+};
+ACTIONS["usr.reset"] = (el) => toast(t("reset_password"), userById(el.getAttribute("data-id")).email + " · " + t("invite_note"));
+ACTIONS["usr.toggle"] = (el) => {
+const u = userById(el.getAttribute("data-id"));
+u.status = u.status === "active" ? "inactive" : "active";
+commit();
+toast(u.name, t(u.status === "active" ? "active" : "inactive"));
+};
+ACTIONS["usr.new"] = () => {
+state.ui.userForm = { name: "", email: "", org: state.org === "WCA" ? "IDA" : state.org, role: "case_manager", err: "" };
+render();
+};
+ACTIONS["usr.cancel"] = () => { state.ui.userForm = null; render(); };
+["name", "email", "org", "role"].forEach((k) => { CHANGES["usrf." + k] = (el) => { state.ui.userForm[k] = el.value; }; });
+ACTIONS["usr.save"] = () => {
+const f = state.ui.userForm;
+if (!f.name.trim() || !f.email.trim()) { f.err = t("err_required"); render(); return; }
+state.data.users.push({ id: "U" + (state.data.users.length + 1), name: f.name, email: f.email,
+org: f.org, role: f.role, status: "active", lastActive: NOW() });
+state.ui.userForm = null;
+commit();
+toast(t("add_user"), f.email + " · " + t("invite_note"));
+};
+const AUDIT_ACTIONS = ["referral.create", "referral.status", "referral.info_request", "note.add",
+"consent.record", "service.update", "user.role", "auth.login"];
+VIEWS.audit = function () {
+if (!can("audit")) return noAccess();
+const f = state.ui.auditFilter;
+let rows = state.data.audit;
+if (f.user) rows = rows.filter((a) => a.user === f.user);
+if (f.org) rows = rows.filter((a) => a.org === f.org);
+if (f.action) rows = rows.filter((a) => a.action === f.action);
+if (f.ref) rows = rows.filter((a) => String(a.entity).toLowerCase().includes(f.ref.toLowerCase()));
+if (f.from) rows = rows.filter((a) => a.at >= Date.parse(f.from));
+if (f.to) rows = rows.filter((a) => a.at <= Date.parse(f.to) + 86400e3);
+const shown = rows.slice(0, 150);
+const bar = filters([
+inp("a-ref", t("case_reference"), "aud.ref", f.ref, "search"),
+sel("a-user", t("user"), "aud.user", state.data.users.map((u) => [u.id, u.name + " · " + u.org]), f.user, true),
+sel("a-org", t("organisation"), "aud.org", partnerOpts(), f.org, true),
+sel("a-act", t("action_type"), "aud.action", AUDIT_ACTIONS.map((a) => [a, a]), f.action, true),
+inp("a-from", t("from_date"), "aud.from", f.from, "date"),
+inp("a-to", t("to_date"), "aud.to", f.to, "date")
+], "aud.clear");
+const table = tbl([t("timestamp"), t("user"), t("organisation"), t("action_type"), t("entity"), t("ip_address"), t("details")],
+shown.map((a) => tr([[fmtDateTime(a.at), "mono nowrap"], esc(userName(a.user)), esc(a.org),
+[esc(a.action), "mono"], [esc(a.entity), "mono"], [esc(a.ip), "mono"], esc(L(a.detail))])).join(""), "sticky-first");
+return breadcrumbs([[t("nav_dashboard"), "#/dashboard"], [t("audit_title"), null]]) +
+pageHead(t("audit_title"), t("role_sysadmin")) +
+P(null, PB(`<p class="help" style="margin:0;max-width:80ch">${icon("lock", 13)} ${T("audit_note")}</p>`)) +
+P(null, bar + `<div class="result-count"><b>${rows.length}</b> ${T("rows")}${rows.length > 150 ? " · 1 – 150" : ""}</div>` +
+(shown.length ? table : emptyState(AR("No entries match these filters.", "لا توجد قيود مطابقة."), "aud.clear")));
+};
+["user", "org", "action", "ref", "from", "to"].forEach((k) => {
+CHANGES["aud." + k] = (el) => { state.ui.auditFilter[k] = el.value; render(); };
+});
+ACTIONS["aud.clear"] = () => { state.ui.auditFilter = { user: "", org: "", action: "", ref: "", from: "", to: "" }; render(); };
+VIEWS.settings = function () {
+if (!can("settings")) return noAccess();
+const s = state.settings;
+const notif = `<div class="form-row">` +
+inp("st-thr", t("set_overdue_threshold") + " (" + t("hours") + ")", "set.overdueHours", s.overdueHours, "number") +
+inp("st-send", t("set_sender"), "set.sender", s.sender) + `</div>` +
+`<fieldset><legend>${T("set_triggers")}</legend>` +
+STAGES.concat(["rejected"]).map((k) => chk("tg-" + k, t("status_" + k), "set.trigger", s.triggers[k], ` data-k="${k}"`)).join("") +
+`</fieldset>`;
+const retention = tbl([t("set_category"), t("retention_period") + " (" + t("months") + ")"],
+[["case", t("case_summary")], ["consent", t("consent")], ["audit", t("audit_title")], ["user", t("users_title")]]
+.map((c) => tr([esc(c[1]),
+`<input type="number" min="6" max="120" step="6" data-chg="set.retention" data-k="${c[0]}" value="${s.retention[c[0]]}" aria-label="${attr(c[1])}">`])).join("")) +
+`<div class="panel-body">${chk("st-anon", t("set_anonymise"), "set.anonymise", s.anonymise)}` +
+`<p class="help">${T("set_next_run")}: ${esc(s.nextAnonymise)}</p></div>`;
+const security = `<div class="form-row">` +
+inp("st-sess", t("set_session") + " (" + t("minutes") + ")", "set.sessionTimeout", s.sessionTimeout, "number") + `</div>` +
+`<fieldset><legend>${T("set_mfa")}</legend>` +
+ROLES.map((r) => chk("mfa-" + r, t("role_" + r), "set.mfa", s.mfa[r], ` data-k="${r}"`)).join("") + `</fieldset>` +
+`<p class="help">${T("set_password_policy")}: ${esc(AR(
+"Minimum 12 characters, mixed case, one number and one symbol, rotated every 90 days, last five passwords not reusable.",
+"١٢ حرفاً كحد أدنى، أحرف كبيرة وصغيرة ورقم ورمز، تُحدَّث كل ٩٠ يوماً، ولا تُعاد آخر خمس كلمات مرور."))}</p>`;
+const localisation = `<div class="form-row">` +
+sel("st-lang", t("set_default_lang"), "set.defaultLang", [["en", "English"], ["ar", "العربية"]], s.defaultLang) +
+sel("st-df", t("set_date_format"), "set.dateFormat", [["DD MMM YYYY", "DD MMM YYYY"], ["YYYY-MM-DD", "YYYY-MM-DD"]], s.dateFormat) +
+`</div><p class="help">${esc(AR(
+"Numbers and dates stay in Western Arabic numerals in both languages.",
+"تبقى الأرقام والتواريخ بالأرقام العربية الغربية في اللغتين."))}</p>`;
+const demo = btn(t("set_reset_demo"), "set.reset", "btn-danger") +
+`<p class="help">${esc(AR("Restores referrals, services, users and settings to their seeded state.",
+"يعيد الإحالات والخدمات والمستخدمين والإعدادات إلى الحالة الأصلية."))}</p>`;
+return breadcrumbs([[t("nav_dashboard"), "#/dashboard"], [t("nav_settings"), null]]) +
+pageHead(t("nav_settings"), t("role_sysadmin")) +
+`<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(340px,1fr))">` +
+`<div>${P(t("set_notifications"), PB(notif))}${P(t("set_localisation"), PB(localisation))}</div>` +
+`<div>${P(t("set_retention"), retention)}${P(t("set_security"), PB(security))}${P(t("set_demo"), PB(demo))}</div>` +
+`</div>` +
+`<div style="margin-block-start:16px">${mvp(
+"Single sign-on and automated provisioning", "الدخول الموحد والتزويد الآلي",
+"SAML or OIDC connection to the consortium identity provider.", "ربط SAML أو OIDC مع مزود هوية التحالف.")}</div>`;
+};
+CHANGES["set.overdueHours"] = (el) => { state.settings.overdueHours = Math.max(1, Number(el.value) || 72); commit(); };
+CHANGES["set.sender"] = (el) => { state.settings.sender = el.value; persist(); };
+CHANGES["set.trigger"] = (el) => { state.settings.triggers[el.getAttribute("data-k")] = el.checked; commit(); toast(t("set_notifications"), t("set_saved")); };
+CHANGES["set.retention"] = (el) => { state.settings.retention[el.getAttribute("data-k")] = Number(el.value); commit(); };
+CHANGES["set.anonymise"] = (el) => { state.settings.anonymise = el.checked; commit(); toast(t("set_anonymise"), t("set_saved")); };
+CHANGES["set.sessionTimeout"] = (el) => { state.settings.sessionTimeout = Number(el.value); persist(); };
+CHANGES["set.mfa"] = (el) => { state.settings.mfa[el.getAttribute("data-k")] = el.checked; commit(); };
+CHANGES["set.defaultLang"] = (el) => { state.settings.defaultLang = el.value; state.lang = el.value; commit(); };
+CHANGES["set.dateFormat"] = (el) => { state.settings.dateFormat = el.value; commit(); };
+ACTIONS["set.reset"] = () => resetDemo();
+VIEWS.notifications = function () {
+if (!can("notifications")) return noAccess();
+const rows = state.data.notifications.filter((n) => can("all_orgs") || n.org === state.org).slice(0, 60);
+const table = tbl([t("timestamp"), t("notif_recipient"), t("notif_event"), t("case_reference"), t("notif_delivery"), t("actions")],
+rows.map((n) => {
+const u = userById(n.to);
+return tr([[fmtDateTime(n.at), "mono nowrap"],
+`${esc(u ? u.name : "—")}<div class="meta">${esc(u ? u.email : "")}</div>`,
+esc(I18N[state.lang]["status_" + n.event] || t("action_request_info")), [esc(n.ref), "mono"],
+T("notif_" + (n.status === "delivered" ? "delivered" : n.status === "queued" ? "queued" : "failed")),
+btn(t("notif_preview"), "notif.open", "btn-sm", ` data-id="${n.id}"`)]);
+}).join(""), "sticky-first");
+return breadcrumbs([[t("nav_dashboard"), "#/dashboard"], [t("notif_title"), null]]) +
+pageHead(t("notif_title"), state.settings.sender) +
+P(null, `<div class="result-count">${esc(AR(
+"A log of the emails the system would have sent. This prototype sends no email.",
+"سجل الرسائل التي كان النظام سيرسلها. لا يرسل هذا النموذج الأولي أي بريد."))}</div>` + table) +
+`<div style="margin-block-start:16px">${mvp(
+"SMS, configurable reminder schedules, escalation chains", "الرسائل القصيرة، جداول التذكير، سلاسل التصعيد",
+"Automatic SMS reminders and escalation to the field coordinator when the overdue threshold is passed.",
+"تذكير تلقائي عبر الرسائل القصيرة وتصعيد إلى المنسق الميداني عند تجاوز حد التأخر.")}</div>`;
+};
+ACTIONS["notif.open"] = (el) => {
+const n = state.data.notifications.find((x) => x.id === el.getAttribute("data-id"));
+const r = findReferral(n.refId);
+openModal({ title: t("notif_preview"), body: r ? emailBody(r, n.event) : `<p class="help">${T("no_results")}</p>` });
+};
+const HELP = [
+{ h: ["Referral initiation", "بدء الإحالة"], p: [
+["Obtain informed consent before recording any case data. Record whether consent was verbal or written and note any limitation the client places on data sharing.",
+"احصل على الموافقة المستنيرة قبل تسجيل أي بيانات عن الحالة. سجّل ما إذا كانت الموافقة شفهية أم كتابية ودوّن أي قيد يضعه المستفيد على مشاركة البيانات."],
+["Search the service directory and confirm the selected service is open, within reach of the client and matches the eligibility criteria before selecting it.",
+"ابحث في دليل الخدمات وتأكد أن الخدمة المختارة عاملة وفي متناول المستفيد وتطابق معايير الأهلية قبل اختيارها."],
+["Keep the case summary factual and brief. Do not record identifying detail, incident narrative or any information the receiving partner does not need to deliver the service.",
+"اجعل ملخص الحالة واقعياً وموجزاً. لا تسجل تفاصيل تعريفية أو سرداً للحادثة أو أي معلومة لا تحتاجها الجهة المستقبِلة لتقديم الخدمة."]]},
+{ h: ["Acceptance and rejection", "القبول والرفض"], p: [
+["Acknowledge every incoming referral within the configured threshold, currently 72 hours. Acknowledgement is not acceptance: use Received while eligibility is being checked.",
+"أقر باستلام كل إحالة واردة خلال الحد المحدد، وهو حالياً ٧٢ ساعة. الإقرار ليس قبولاً: استخدم حالة مُستلمة أثناء التحقق من الأهلية."],
+["A rejection must always carry a reason and, where useful, a suggested alternative provider. A rejection without a reason cannot be submitted.",
+"يجب أن يتضمن الرفض دائماً سبباً، وعند الإمكان اقتراح مقدم خدمة بديل. لا يمكن إرسال رفض دون سبب."]]},
+{ h: ["Escalation", "التصعيد"], p: [
+["Referrals marked Emergency are escalated to the receiving partner administrator immediately and are expected to be acknowledged the same working day.",
+"تُصعَّد الإحالات الموسومة بأنها طارئة إلى مدير الشريك المستقبِل فوراً ويُتوقع الإقرار بها في يوم العمل نفسه."],
+["Any referral past the overdue threshold appears on the dashboard overdue panel for both partners. The referring caseworker should follow up by phone before re-referring.",
+"تظهر أي إحالة تجاوزت حد التأخر في لوحة التنبيهات لدى الطرفين. على عامل الحالة المُحيل المتابعة هاتفياً قبل إعادة الإحالة."]]},
+{ h: ["Closure", "الإغلاق"], p: [
+["Close the referral with one of the five outcome codes. Reporting uses the outcome rather than the status, so record it accurately even when the service was not delivered.",
+"أغلق الإحالة بأحد رموز النتائج الخمسة. التقارير تعتمد على النتيجة لا على الحالة، لذا سجّلها بدقة حتى عند عدم تقديم الخدمة."],
+["Add a closure note describing what the client received. This is the record the referring partner will read.",
+"أضف ملاحظة إغلاق تصف ما حصل عليه المستفيد. هذا هو السجل الذي ستقرأه الجهة المُحيلة."]]},
+{ h: ["Consent and data protection", "الموافقة وحماية البيانات"], p: [
+["Consent covers one referral to one named organisation for one stated purpose. A further referral requires fresh consent.",
+"تغطي الموافقة إحالة واحدة إلى منظمة واحدة محددة لغرض واحد معلن. أي إحالة إضافية تتطلب موافقة جديدة."],
+["Case data is retained for the configured retention period and then anonymised automatically. The audit log is append-only and cannot be edited by any role.",
+"تُحفظ بيانات الحالة طوال فترة الاحتفاظ المحددة ثم يُخفى تعريفها آلياً. سجل التدقيق قابل للإضافة فقط ولا يمكن لأي دور تعديله."]]}
+];
+const FAQ = [
+[["What happens if I lose connection while entering a referral?", "ماذا يحدث إذا انقطع الاتصال أثناء إدخال إحالة؟"],
+["Entered values are held locally until the referral is submitted. Full offline data entry with background sync is a post-MVP item.",
+"تُحفظ القيم المُدخلة محلياً حتى إرسال الإحالة. الإدخال الكامل دون اتصال مع المزامنة الخلفية بند لما بعد المرحلة الأولى."]],
+[["Can I see referrals belonging to another partner?", "هل يمكنني رؤية إحالات شريك آخر؟"],
+["No. Case-level data is visible only to the referring and receiving organisations, and to the System Administrator at War Child Alliance.",
+"لا. بيانات الحالة مرئية فقط للمنظمة المُحيلة والمستقبِلة، ولمدير النظام في War Child Alliance."]],
+[["Why can the Read Only role not open a case?", "لماذا لا يستطيع دور الاطلاع فتح الحالة؟"],
+["Data minimisation. Reporting roles need aggregate figures, not personal detail, so case-level fields are withheld by design.",
+"تقليل البيانات إلى الحد الأدنى. تحتاج أدوار إعداد التقارير أرقاماً إجمالية لا تفاصيل شخصية، لذا تُحجب حقول الحالة بحكم التصميم."]]
+];
+VIEWS.help = function () {
+const i = state.lang === "ar" ? 1 : 0;
+const sec = (s) => P(s.h[i], PB(s.p.map((p) => `<p style="max-width:70ch">${esc(p[i])}</p>`).join("")));
+return breadcrumbs([[t("nav_dashboard"), "#/dashboard"], [t("nav_help"), null]]) +
+pageHead(t("help_title"), "SY-JO 0041") +
+`<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(340px,1fr))">` +
+`<div>${HELP.slice(0, 3).map(sec).join("")}</div>` +
+`<div>${HELP.slice(3).map(sec).join("")}` +
+P("FAQ", PB(FAQ.map((f) => `<p><b>${esc(f[0][i])}</b><br>${esc(f[1][i])}</p>`).join(""))) +
+P(AR("User manual", "دليل المستخدم"), PB(
+`<p class="help" style="margin:0">${esc(AR(
+"The full user manual is delivered in English and Arabic at handover, with short role-based training recordings.",
+"يُسلَّم دليل المستخدم الكامل بالإنجليزية والعربية عند التسليم النهائي، مع تسجيلات تدريبية قصيرة لكل دور."))}</p>` +
+`<p class="help">${esc(AR("Standard operating procedures, version 0.9 draft", "إجراءات التشغيل الموحدة، الإصدار ٠.٩ مسودة"))}</p>`)) +
+`</div></div>` +
+`<div style="margin-block-start:16px">${mvp(
+"Kurdish (Kurmanji) language pack, KOBO, CPIMS and Primero interoperability",
+"حزمة اللغة الكردية (الكرمانجية) والتشغيل البيني مع KOBO وCPIMS وبريميرو",
+"A full Kurmanji interface translation and case exchange with existing case management systems.",
+"ترجمة كاملة للواجهة إلى الكرمانجية وتبادل الحالات مع أنظمة إدارة الحالات القائمة.")}</div>`;
+};
+restore();
+if (!location.hash) location.hash = state.authed ? "#/dashboard" : "#/login";
+render();
+</script>
+</body>
+</html>
