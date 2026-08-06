@@ -33,6 +33,7 @@ export const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "Studio", href: "/studio" },
   { label: "Research", href: "/research" },
+  { label: "Prototypes", href: "/prototypes" },
   { label: "Start a project", href: "/contact" },
 ] as const;
 
@@ -104,5 +105,24 @@ export const SELECTED_WORK = [
       "ECG classification with a one dimensional residual network on the PTB-XL dataset.",
     linkLabel: "Paper",
     linkHref: "https://craigouma.github.io/ptbxl-ecg-paper/ptbxl_efficient_ecg.pdf",
+  },
+] as const;
+
+// Ordered newest first. Each file is a self contained interactive HTML build,
+// served as is from public/prototypes/ so it keeps its own styling and script.
+export const PROTOTYPES = [
+  {
+    title: "Air4Laos mobile app",
+    description:
+      "A mobile air quality app built from a terms of reference, showing live PM2.5 readings and alerts.",
+    meta: "Prototype",
+    href: "/prototypes/air4laos-mobile-app.html",
+  },
+  {
+    title: "Digital referral system",
+    description:
+      "A referral management system prototype built from a terms of reference, covering intake, routing, and case tracking.",
+    meta: "Prototype",
+    href: "/prototypes/referral-management-system-proposal.html",
   },
 ] as const;
