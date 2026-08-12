@@ -1,1 +1,18 @@
+RewriteEngine On
+
+# Canonicalize to https://sowerved.tech (apex, https) so the www and http
+# variants never serve a 200 of their own. Trusts X-Forwarded-Proto over
+# the local HTTPS flag for the protocol check, since Cloudflare sits in
+# front of this origin and may connect to it over plain HTTP even when
+# the visitor used https; checking %{HTTPS} alone would redirect loop.
+
+# www -> apex, landing on https in one hop regardless of the request's protocol
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
+
+# http -> https, only when neither Cloudflare nor Apache reports https
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
 ErrorDocument 404 /404.html
