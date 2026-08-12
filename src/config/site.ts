@@ -49,6 +49,16 @@ export const SCHOLAR_URL = "https://scholar.google.com/citations?user=hI6OXwsAAA
 export const RESEARCH_PAPERS = [
   {
     title:
+      "Interpretable Machine Learning for Child Stunting and Wasting Risk: A Cross-National Evidence Base for Programme Monitoring and Targeting",
+    summary:
+      "An XGBoost classifier on 880 country-survey observations across 150 countries separates WHO high-burden stunting observations with an AUROC of 0.948, with SHAP finding WASH access, GDP per capita, and under-5 population as the dominant drivers, a result with direct implications for programme monitoring and targeting.",
+    meta: "Preprint, 2026",
+    paper: "https://craigouma.github.io/child-nutrition-shap/paper/child_nutrition_shap.pdf",
+    code: "https://github.com/craigouma/child-nutrition-shap",
+    project: "https://craigouma.github.io/child-nutrition-shap/",
+  },
+  {
+    title:
       "Explainable Credit Default Prediction for Microfinance: A Gradient Boosting and SHAP Study on Consumer Credit Data",
     summary:
       "Three classifiers on 150,000 borrowers, with SHAP showing that revolving utilisation and delinquency history carry most of the signal, and all tree models calibrating poorly, a result with direct lending implications.",
