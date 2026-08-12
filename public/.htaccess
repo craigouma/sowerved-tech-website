@@ -15,4 +15,7 @@ RewriteCond %{HTTP:X-Forwarded-Proto} !https
 RewriteCond %{HTTPS} off
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
+# Old WordPress team page, replaced by /studio on this site
+RedirectMatch 301 ^/our-team/?$ /studio
+
 ErrorDocument 404 /404.html
