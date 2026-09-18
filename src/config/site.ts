@@ -122,6 +122,20 @@ export const SELECTED_WORK = [
 // served as is from public/prototypes/ so it keeps its own styling and script.
 export const PROTOTYPES = [
   {
+    title: "Prosperminds website",
+    description:
+      "A redesign concept for Prosperminds' public finance management training site, covering the homepage, events calendar, and delegate registration flow.",
+    meta: "Prototype",
+    href: "/prototypes/prosperminds/site.html",
+  },
+  {
+    title: "Prosperminds admin panel",
+    description:
+      "A redesign concept for Prosperminds' admin and CMS panel, covering registrations, accounting, events, and content management.",
+    meta: "Prototype",
+    href: "/prototypes/prosperminds/admin.html",
+  },
+  {
     title: "Air4Laos mobile app",
     description:
       "A mobile air quality app built from a terms of reference, showing live PM2.5 readings and alerts.",
