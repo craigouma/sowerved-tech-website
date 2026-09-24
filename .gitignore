@@ -29,3 +29,7 @@ sowerved-redesign-phase-2.md
 # AI assistant instruction files
 AGENTS.md
 CLAUDE.md
+
+# Internal ops notes, never meant to be committed or deployed
+security.md
+incident-response.md
