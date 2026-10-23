@@ -18,7 +18,7 @@ const paperSchemas = RESEARCH_PAPERS.map((paper) => ({
 
 <Layout
   title="Research"
-  description="Published machine learning research on neonatal monitoring, ECG classification, and credit default, with open code and data."
+  description="Published machine learning research on neonatal monitoring, ECG classification, credit default, child nutrition, and satellite flood and drought mapping, with open code and data."
   path="/research"
 >
   {paperSchemas.map((schema) => (
@@ -30,8 +30,8 @@ const paperSchemas = RESEARCH_PAPERS.map((paper) => ({
       <Eyebrow>Research</Eyebrow>
       <h1 class="intro__heading">Published research.</h1>
       <p class="intro__lead">
-        Preprints on machine learning for healthcare, cardiology, and credit, each with
-        open code and data.
+        Preprints on machine learning for healthcare, cardiology, credit, and Earth
+        observation, each with open code and data.
       </p>
       {SCHOLAR_URL && (
         <a
