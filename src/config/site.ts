@@ -49,6 +49,26 @@ export const SCHOLAR_URL = "https://scholar.google.com/citations?user=hI6OXwsAAA
 export const RESEARCH_PAPERS = [
   {
     title:
+      "How Well Do Globally Trained Sentinel-1 Flood Mapping Methods Transfer to Kenya? An Evaluation Against UNOSAT Rapid Mapping of the 2024 Long-Rains Floods",
+    summary:
+      "Nine radar flood mapping methods built elsewhere, scored against UNOSAT's mapping of Kenya's 2024 long-rains floods: a U-Net trained on no Kenyan data reaches an IoU of 0.347 along the Tana against 0.160 for the best classical method, yet every method fails on built-up land and the radar-to-reference day gap matters as much as the method.",
+    meta: "Preprint, 2026",
+    paper: "https://craigouma.github.io/kenya-floods-sar-2024/paper/kenya_floods_sar.pdf",
+    code: "https://github.com/craigouma/kenya-floods-sar-2024",
+    project: "https://craigouma.github.io/kenya-floods-sar-2024/",
+  },
+  {
+    title:
+      "Satellite-Derived Drought Indicators as Early Predictors of Food Insecurity Risk in Northern Kenya's Arid and Semi-Arid Lands",
+    summary:
+      "Satellite rainfall and vegetation indicators against 2,350 FEWS NET county classifications reach an AUROC of 0.913 but do not beat persistence on accuracy (0.810 against 0.850), yet anticipate 59.3% of deteriorations at one month of lead, exactly where persistence is silent, a result with direct implications for early warning design.",
+    meta: "Preprint, 2026",
+    paper: "https://craigouma.github.io/eo-drought-food-security-kenya/paper/eo_drought_food_security.pdf",
+    code: "https://github.com/craigouma/eo-drought-food-security-kenya",
+    project: "https://craigouma.github.io/eo-drought-food-security-kenya/",
+  },
+  {
+    title:
       "Interpretable Machine Learning for Child Stunting and Wasting Risk: A Cross-National Evidence Base for Programme Monitoring and Targeting",
     summary:
       "An XGBoost classifier on 880 country-survey observations across 150 countries separates WHO high-burden stunting observations with an AUROC of 0.948, with SHAP finding WASH access, GDP per capita, and under-5 population as the dominant drivers, a result with direct implications for programme monitoring and targeting.",
