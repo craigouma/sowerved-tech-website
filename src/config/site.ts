@@ -49,6 +49,26 @@ export const SCHOLAR_URL = "https://scholar.google.com/citations?user=hI6OXwsAAA
 export const RESEARCH_PAPERS = [
   {
     title:
+      "Rebuilding the Coverage Gap Score from Public Reference Data, and Unnamed Local Roads on Tribal Reservations: Methodology for the Bias Bounty Mapping Equity Challenge",
+    summary:
+      "Estimating a map coverage gap score for 9,794 Census tracts with no labels: an estimate built from the challenge package alone cut public RMSE from 0.1072 to 0.0745, and rebuilding the removed reference layers from public sources, with the organisers' permission, reached 0.02152.",
+    meta: "Best Documentation entry, Bias Bounty Mapping Equity Challenge, 2026",
+    paper: "https://craigouma.github.io/bias-bounty-mapping-equity-challenge/writeup/methodology.pdf",
+    code: "https://github.com/craigouma/bias-bounty-mapping-equity-challenge",
+    project: "https://craigouma.github.io/bias-bounty-mapping-equity-challenge/methodology/",
+  },
+  {
+    title:
+      "Unnamed Local Roads on Tribal Reservations: A Coverage Gap the Bias Scorecard Cannot See",
+    summary:
+      "On 80 federally recognised reservation tracts, local streets are unnamed 9.5 percentage points more often than on matched non-tribal tracts, reaching 27.6 on the Osage Reservation, a gap the scorecard misses because it counts road length and not names, with direct consequences for emergency dispatch and evacuation.",
+    meta: "Best Bias Discovery entry, Bias Bounty Mapping Equity Challenge, 2026",
+    paper: "https://craigouma.github.io/bias-bounty-mapping-equity-challenge/writeup/bias_discovery.pdf",
+    code: "https://github.com/craigouma/bias-bounty-mapping-equity-challenge",
+    project: "https://craigouma.github.io/bias-bounty-mapping-equity-challenge/bias-discovery/",
+  },
+  {
+    title:
       "How Well Do Globally Trained Sentinel-1 Flood Mapping Methods Transfer to Kenya? An Evaluation Against UNOSAT Rapid Mapping of the 2024 Long-Rains Floods",
     summary:
       "Nine radar flood mapping methods built elsewhere, scored against UNOSAT's mapping of Kenya's 2024 long-rains floods: a U-Net trained on no Kenyan data reaches an IoU of 0.347 along the Tana against 0.160 for the best classical method, yet every method fails on built-up land and the radar-to-reference day gap matters as much as the method.",
