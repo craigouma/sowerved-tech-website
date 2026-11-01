@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /sjr-drs
 
 Sitemap: https://sowerved.tech/sitemap-index.xml
