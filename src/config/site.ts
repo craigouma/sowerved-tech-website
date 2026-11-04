@@ -162,6 +162,13 @@ export const SELECTED_WORK = [
 // served as is from public/prototypes/ so it keeps its own styling and script.
 export const PROTOTYPES = [
   {
+    title: "HR workforce dashboard",
+    description:
+      "A Power BI HR dashboard design previewed in the browser on synthetic data, covering headcount, diversity, vacancies, retention, and contract expiry, with slicers and cross-filtering.",
+    meta: "Prototype",
+    href: "/prototypes/hr-workforce-dashboard.html",
+  },
+  {
     title: "Prosperminds website",
     description:
       "A redesign concept for Prosperminds' public finance management training site, covering the homepage, events calendar, and delegate registration flow.",
