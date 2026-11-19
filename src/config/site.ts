@@ -49,6 +49,16 @@ export const SCHOLAR_URL = "https://scholar.google.com/citations?user=hI6OXwsAAA
 export const RESEARCH_PAPERS = [
   {
     title:
+      "Where Should the LLM Sit? Architectural Defenses Against Document-Borne Prompt Injection in Automated Credit Underwriting",
+    summary:
+      "Moving the credit decision out of the LLM cuts successful prompt injection from 41.8% and 65.0% to 2.7% and 2.0% in two open-weight models, and added checks leave no success in 1,800 Phi pairs, yet falsified documents still succeed against the scorecard 16.7% to 19.8% of the time whether or not an LLM reads them.",
+    meta: "Preprint, 2026",
+    paper: "https://craigouma.github.io/llm-underwriting-injection/paper/where_should_the_llm_sit.pdf",
+    code: "https://github.com/craigouma/llm-underwriting-injection",
+    project: "https://craigouma.github.io/llm-underwriting-injection/",
+  },
+  {
+    title:
       "Rebuilding the Coverage Gap Score from Public Reference Data, and Unnamed Local Roads on Tribal Reservations: Methodology for the Bias Bounty Mapping Equity Challenge",
     summary:
       "Estimating a map coverage gap score for 9,794 Census tracts with no labels: an estimate built from the challenge package alone cut public RMSE from 0.1072 to 0.0745, and rebuilding the removed reference layers from public sources, with the organisers' permission, reached 0.02152.",
